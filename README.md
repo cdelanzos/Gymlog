@@ -1,2 +1,1522 @@
 # Gymlog
 Front end app for gym 
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GYM LOG — Tu Entrenamiento Personal</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --surface2: #1a1a1a;
+    --border: #222222;
+    --accent: #e8ff47;
+    --accent2: #ff6b35;
+    --text: #f0f0f0;
+    --muted: #666666;
+    --success: #4ade80;
+    --cardio: #38bdf8;
+  }
+
+- { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+background: var(–bg);
+color: var(–text);
+font-family: ‘DM Sans’, sans-serif;
+min-height: 100vh;
+overflow-x: hidden;
+}
+
+/* HEADER */
+header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 20px 32px;
+border-bottom: 1px solid var(–border);
+position: sticky;
+top: 0;
+background: var(–bg);
+z-index: 100;
+}
+
+.logo {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 2rem;
+letter-spacing: 4px;
+color: var(–accent);
+}
+
+.logo span { color: var(–muted); }
+
+.header-right {
+display: flex;
+align-items: center;
+gap: 16px;
+}
+
+.date-badge {
+font-family: ‘DM Mono’, monospace;
+font-size: 0.75rem;
+color: var(–muted);
+background: var(–surface2);
+padding: 6px 12px;
+border-radius: 4px;
+border: 1px solid var(–border);
+}
+
+/* NAV TABS */
+.nav-tabs {
+display: flex;
+gap: 2px;
+padding: 16px 32px;
+border-bottom: 1px solid var(–border);
+overflow-x: auto;
+}
+
+.tab-btn {
+background: none;
+border: none;
+color: var(–muted);
+font-family: ‘DM Sans’, sans-serif;
+font-size: 0.85rem;
+font-weight: 500;
+padding: 8px 20px;
+cursor: pointer;
+border-radius: 4px;
+transition: all 0.2s;
+white-space: nowrap;
+letter-spacing: 1px;
+text-transform: uppercase;
+}
+
+.tab-btn:hover { color: var(–text); background: var(–surface2); }
+.tab-btn.active {
+color: var(–bg);
+background: var(–accent);
+}
+
+/* MAIN CONTENT */
+.main { padding: 32px; max-width: 900px; margin: 0 auto; }
+
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.3s ease; }
+
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(8px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+/* WORKOUT PAGE */
+.workout-header {
+display: flex;
+justify-content: space-between;
+align-items: flex-start;
+margin-bottom: 32px;
+flex-wrap: wrap;
+gap: 16px;
+}
+
+.section-title {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 3rem;
+letter-spacing: 3px;
+line-height: 1;
+color: var(–text);
+}
+
+.section-subtitle {
+font-size: 0.85rem;
+color: var(–muted);
+margin-top: 6px;
+font-weight: 300;
+letter-spacing: 0.5px;
+}
+
+.day-selector {
+display: flex;
+gap: 8px;
+}
+
+.day-btn {
+background: var(–surface2);
+border: 1px solid var(–border);
+color: var(–muted);
+font-family: ‘DM Mono’, monospace;
+font-size: 0.8rem;
+padding: 8px 16px;
+border-radius: 4px;
+cursor: pointer;
+transition: all 0.2s;
+letter-spacing: 1px;
+}
+
+.day-btn:hover { border-color: var(–accent); color: var(–accent); }
+.day-btn.active { background: var(–accent); color: var(–bg); border-color: var(–accent); font-weight: 600; }
+
+/* PROGRESS BAR */
+.session-progress {
+background: var(–surface2);
+border: 1px solid var(–border);
+border-radius: 8px;
+padding: 20px 24px;
+margin-bottom: 28px;
+display: flex;
+align-items: center;
+gap: 24px;
+flex-wrap: wrap;
+}
+
+.progress-info { flex: 1; min-width: 150px; }
+.progress-label { font-size: 0.7rem; color: var(–muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+.progress-bar-wrap { background: var(–border); border-radius: 2px; height: 4px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: var(–accent); border-radius: 2px; transition: width 0.5s ease; }
+
+.progress-stats {
+display: flex;
+gap: 24px;
+flex-wrap: wrap;
+}
+
+.stat-item { text-align: center; }
+.stat-num {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 2rem;
+color: var(–accent);
+line-height: 1;
+}
+.stat-lbl { font-size: 0.65rem; color: var(–muted); letter-spacing: 1px; text-transform: uppercase; }
+
+/* EXERCISE CARDS */
+.section-label {
+font-size: 0.7rem;
+color: var(–muted);
+letter-spacing: 3px;
+text-transform: uppercase;
+margin-bottom: 14px;
+margin-top: 28px;
+padding-left: 4px;
+display: flex;
+align-items: center;
+gap: 10px;
+}
+.section-label::after {
+content: ‘’;
+flex: 1;
+height: 1px;
+background: var(–border);
+}
+
+.exercise-card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 8px;
+padding: 16px 20px;
+margin-bottom: 12px;
+display: grid;
+grid-template-columns: auto auto 1fr auto;
+gap: 14px 16px;
+align-items: center;
+transition: all 0.2s;
+cursor: default;
+}
+
+.exercise-card:hover { border-color: #333; }
+.exercise-card.done {
+border-color: var(–success);
+background: rgba(74, 222, 128, 0.05);
+}
+.exercise-card.done .ex-name { text-decoration: line-through; color: var(–muted); }
+.exercise-card.cardio-card { border-left: 3px solid var(–cardio); }
+.exercise-card.cardio-card.done { border-color: var(–success); border-left-color: var(–success); }
+
+.ex-number {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 1.8rem;
+color: var(–border);
+line-height: 1;
+min-width: 32px;
+}
+.exercise-card.done .ex-number { color: var(–success); }
+
+.ex-info { min-width: 0; }
+
+.ex-name {
+font-weight: 600;
+font-size: 1rem;
+margin-bottom: 4px;
+transition: all 0.2s;
+}
+
+.ex-meta {
+font-size: 0.78rem;
+color: var(–muted);
+font-family: ‘DM Mono’, monospace;
+margin-bottom: 8px;
+}
+
+.ex-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.tag {
+font-size: 0.65rem;
+padding: 2px 8px;
+border-radius: 2px;
+letter-spacing: 1px;
+text-transform: uppercase;
+font-weight: 600;
+}
+.tag-muscle { background: rgba(232,255,71,0.1); color: var(–accent); }
+.tag-cardio { background: rgba(56,189,248,0.1); color: var(–cardio); }
+.tag-equipment { background: var(–surface2); color: var(–muted); border: 1px solid var(–border); }
+
+.ex-actions {
+display: flex;
+flex-direction: column;
+gap: 8px;
+align-items: flex-end;
+}
+
+.btn-done {
+background: none;
+border: 1px solid var(–border);
+color: var(–muted);
+font-family: ‘DM Mono’, monospace;
+font-size: 0.7rem;
+padding: 6px 14px;
+border-radius: 4px;
+cursor: pointer;
+transition: all 0.2s;
+white-space: nowrap;
+letter-spacing: 1px;
+}
+.btn-done:hover { border-color: var(–success); color: var(–success); }
+.exercise-card.done .btn-done { border-color: var(–success); color: var(–success); background: rgba(74,222,128,0.1); }
+
+.btn-info {
+background: none;
+border: 1px solid var(–border);
+color: var(–muted);
+font-size: 0.7rem;
+padding: 6px 12px;
+border-radius: 4px;
+cursor: pointer;
+transition: all 0.2s;
+font-family: ‘DM Mono’, monospace;
+letter-spacing: 1px;
+}
+.btn-info:hover { border-color: var(–accent); color: var(–accent); }
+
+/* NOTES */
+.ex-notes {
+grid-column: 2 / 3;
+font-size: 0.78rem;
+color: #555;
+font-style: italic;
+line-height: 1.5;
+display: none;
+}
+.ex-notes.visible { display: block; }
+
+/* MODAL */
+.modal-overlay {
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.85);
+z-index: 1000;
+justify-content: center;
+align-items: center;
+padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+
+.modal {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 12px;
+max-width: 560px;
+width: 100%;
+max-height: 85vh;
+overflow-y: auto;
+animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+from { opacity: 0; transform: translateY(20px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+display: flex;
+justify-content: space-between;
+align-items: flex-start;
+padding: 24px 28px 0;
+}
+
+.modal-title {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 2rem;
+letter-spacing: 2px;
+line-height: 1;
+}
+
+.modal-close {
+background: none;
+border: 1px solid var(–border);
+color: var(–muted);
+width: 32px; height: 32px;
+border-radius: 4px;
+cursor: pointer;
+font-size: 1rem;
+display: flex; align-items: center; justify-content: center;
+transition: all 0.2s;
+flex-shrink: 0;
+}
+.modal-close:hover { border-color: var(–text); color: var(–text); }
+
+.modal-body { padding: 20px 28px 28px; }
+
+.modal-meta {
+font-family: ‘DM Mono’, monospace;
+font-size: 0.75rem;
+color: var(–muted);
+margin-bottom: 16px;
+}
+
+.modal-desc {
+font-size: 0.9rem;
+line-height: 1.7;
+color: #ccc;
+margin-bottom: 20px;
+}
+
+.modal-steps {
+margin-bottom: 20px;
+}
+
+.modal-steps h4 {
+font-size: 0.7rem;
+letter-spacing: 2px;
+text-transform: uppercase;
+color: var(–muted);
+margin-bottom: 12px;
+}
+
+.step-item {
+display: flex;
+gap: 12px;
+margin-bottom: 10px;
+font-size: 0.85rem;
+line-height: 1.5;
+color: #ccc;
+}
+
+.step-num {
+background: var(–accent);
+color: var(–bg);
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 0.9rem;
+width: 22px; height: 22px;
+border-radius: 2px;
+display: flex; align-items: center; justify-content: center;
+flex-shrink: 0;
+margin-top: 1px;
+}
+
+.modal-video {
+width: 100%;
+border-radius: 6px;
+overflow: hidden;
+margin-bottom: 16px;
+background: var(–surface2);
+border: 1px solid var(–border);
+}
+
+.modal-video iframe {
+width: 100%;
+height: 240px;
+display: block;
+}
+
+/* Exercise image in modal */
+.modal-img-wrap {
+width: 100%;
+border-radius: 8px;
+overflow: hidden;
+margin-bottom: 20px;
+background: var(–surface2);
+border: 1px solid var(–border);
+display: flex;
+align-items: center;
+justify-content: center;
+min-height: 160px;
+}
+.modal-img-wrap img {
+width: 100%;
+max-height: 250px;
+object-fit: contain;
+display: block;
+}
+
+/* Thumbnail in exercise card */
+.ex-thumb {
+width: 68px;
+height: 68px;
+border-radius: 6px;
+overflow: hidden;
+background: var(–surface2);
+flex-shrink: 0;
+border: 1px solid var(–border);
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+transition: all 0.2s;
+}
+.ex-thumb:hover { border-color: var(–accent); transform: scale(1.05); }
+.ex-thumb img {
+width: 100%;
+height: 100%;
+object-fit: contain;
+}
+.ex-thumb.no-img {
+background: var(–surface2);
+font-size: 1.6rem;
+}
+
+.modal-tip {
+background: rgba(232,255,71,0.05);
+border: 1px solid rgba(232,255,71,0.2);
+border-radius: 6px;
+padding: 14px 16px;
+font-size: 0.82rem;
+color: var(–accent);
+line-height: 1.5;
+}
+.modal-tip strong { display: block; margin-bottom: 4px; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; }
+
+/* HISTORY PAGE */
+.history-grid { display: grid; gap: 12px; }
+
+.history-card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 8px;
+padding: 20px 24px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+flex-wrap: wrap;
+gap: 12px;
+}
+
+.hist-date { font-family: ‘DM Mono’, monospace; font-size: 0.8rem; color: var(–muted); }
+.hist-day { font-weight: 600; font-size: 1rem; }
+.hist-completion { text-align: right; }
+.hist-pct { font-family: ‘Bebas Neue’, sans-serif; font-size: 2.5rem; color: var(–accent); line-height: 1; }
+.hist-done { font-size: 0.7rem; color: var(–muted); }
+
+.empty-history {
+text-align: center;
+padding: 60px 20px;
+color: var(–muted);
+}
+.empty-history .big { font-family: ‘Bebas Neue’, sans-serif; font-size: 4rem; letter-spacing: 4px; color: #1e1e1e; display: block; }
+
+/* PROFILE PAGE */
+.profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+
+.profile-card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 8px;
+padding: 20px;
+}
+
+.profile-label { font-size: 0.65rem; color: var(–muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+.profile-value { font-family: ‘Bebas Neue’, sans-serif; font-size: 2.5rem; color: var(–text); line-height: 1; }
+.profile-unit { font-size: 0.8rem; color: var(–muted); font-family: ‘DM Sans’, sans-serif; }
+
+.equipment-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.equip-tag {
+background: var(–surface2);
+border: 1px solid var(–border);
+border-radius: 4px;
+padding: 6px 12px;
+font-size: 0.78rem;
+color: var(–muted);
+font-family: ‘DM Mono’, monospace;
+}
+
+/* FINISH BUTTON */
+.finish-session-wrap { margin-top: 32px; text-align: center; }
+.btn-finish {
+background: var(–accent);
+color: var(–bg);
+border: none;
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 1.4rem;
+letter-spacing: 3px;
+padding: 16px 48px;
+border-radius: 6px;
+cursor: pointer;
+transition: all 0.2s;
+}
+.btn-finish:hover { background: #d4eb3a; transform: translateY(-2px); }
+
+/* Timer */
+.timer-widget {
+position: fixed;
+bottom: 24px;
+right: 24px;
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 10px;
+padding: 16px 20px;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 8px;
+z-index: 50;
+min-width: 120px;
+}
+.timer-label { font-size: 0.65rem; color: var(–muted); letter-spacing: 2px; text-transform: uppercase; }
+.timer-display { font-family: ‘Bebas Neue’, sans-serif; font-size: 2rem; color: var(–accent); letter-spacing: 2px; }
+.timer-btns { display: flex; gap: 6px; }
+.timer-btn {
+background: var(–surface2);
+border: 1px solid var(–border);
+color: var(–muted);
+font-family: ‘DM Mono’, monospace;
+font-size: 0.65rem;
+padding: 4px 8px;
+border-radius: 3px;
+cursor: pointer;
+transition: all 0.2s;
+letter-spacing: 1px;
+}
+.timer-btn:hover { color: var(–accent); border-color: var(–accent); }
+
+.scroll-top {
+position: fixed;
+bottom: 24px;
+left: 24px;
+background: var(–surface2);
+border: 1px solid var(–border);
+color: var(–muted);
+width: 36px; height: 36px;
+border-radius: 6px;
+cursor: pointer;
+font-size: 1rem;
+display: flex; align-items: center; justify-content: center;
+transition: all 0.2s;
+}
+.scroll-top:hover { color: var(–accent); border-color: var(–accent); }
+
+@media (max-width: 600px) {
+header { padding: 16px 20px; }
+.main { padding: 20px; }
+.nav-tabs { padding: 12px 20px; }
+.section-title { font-size: 2.2rem; }
+.exercise-card { grid-template-columns: auto auto 1fr; }
+.ex-actions { grid-column: 1 / -1; flex-direction: row; justify-content: flex-end; }
+.profile-grid { grid-template-columns: 1fr; }
+.timer-widget { bottom: 16px; right: 16px; }
+}
+</style>
+
+</head>
+<body>
+
+<header>
+  <div class="logo">GYM<span>LOG</span></div>
+  <div class="header-right">
+    <div class="date-badge" id="currentDate"></div>
+  </div>
+</header>
+
+<nav class="nav-tabs">
+  <button class="tab-btn active" onclick="showPage('workout')">Entrenamiento</button>
+  <button class="tab-btn" onclick="showPage('history')">Historial</button>
+  <button class="tab-btn" onclick="showPage('profile')">Perfil</button>
+</nav>
+
+<main class="main">
+
+  <!-- WORKOUT PAGE -->
+
+  <div class="page active" id="page-workout">
+    <div class="workout-header">
+      <div>
+        <div class="section-title" id="workoutTitle">DÍA A</div>
+        <div class="section-subtitle" id="workoutSubtitle">Tren superior + Core + Cardio</div>
+      </div>
+      <div class="day-selector">
+        <button class="day-btn active" onclick="loadDay('A')">DÍA A</button>
+        <button class="day-btn" onclick="loadDay('B')">DÍA B</button>
+      </div>
+    </div>
+
+```
+<div class="session-progress">
+  <div class="progress-info">
+    <div class="progress-label">Progreso de sesión</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="progress-stats">
+    <div class="stat-item">
+      <div class="stat-num" id="statDone">0</div>
+      <div class="stat-lbl">Hechos</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="statTotal">0</div>
+      <div class="stat-lbl">Total</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="statTime">~60</div>
+      <div class="stat-lbl">Min est.</div>
+    </div>
+  </div>
+</div>
+
+<div id="exerciseList"></div>
+
+<div class="finish-session-wrap">
+  <button class="btn-finish" onclick="finishSession()">GUARDAR SESIÓN</button>
+</div>
+```
+
+  </div>
+
+  <!-- HISTORY PAGE -->
+
+  <div class="page" id="page-history">
+    <div class="section-title" style="margin-bottom:8px">HISTORIAL</div>
+    <div class="section-subtitle" style="margin-bottom:28px">Tus últimas sesiones</div>
+    <div class="history-grid" id="historyGrid">
+      <div class="empty-history">
+        <span class="big">0</span>
+        Aún no has guardado ninguna sesión.<br>¡Completa tu primer entrenamiento!
+      </div>
+    </div>
+  </div>
+
+  <!-- PROFILE PAGE -->
+
+  <div class="page" id="page-profile">
+    <div class="section-title" style="margin-bottom:8px">PERFIL</div>
+    <div class="section-subtitle" style="margin-bottom:28px">Tus datos y equipamiento</div>
+
+```
+<div class="profile-grid">
+  <div class="profile-card">
+    <div class="profile-label">Edad</div>
+    <div class="profile-value">44 <span class="profile-unit">años</span></div>
+  </div>
+  <div class="profile-card">
+    <div class="profile-label">Peso</div>
+    <div class="profile-value">74.5 <span class="profile-unit">kg</span></div>
+  </div>
+  <div class="profile-card">
+    <div class="profile-label">Altura</div>
+    <div class="profile-value">183 <span class="profile-unit">cm</span></div>
+  </div>
+  <div class="profile-card">
+    <div class="profile-label">IMC</div>
+    <div class="profile-value">22.2 <span class="profile-unit">saludable</span></div>
+  </div>
+</div>
+
+<div class="profile-card" style="margin-bottom:16px">
+  <div class="profile-label">Plan de entrenamiento</div>
+  <div style="font-size:0.9rem;color:#ccc;line-height:1.6;margin-top:12px">
+    🏋️ <strong>3–4 días/semana</strong> — 2 con entrenador personal, 2 sesiones libres (esta app)<br>
+    ⏱️ <strong>~60 minutos</strong> por sesión libre, incluyendo cardio<br>
+    💪 El entrenador trabaja <strong>todos los grupos musculares</strong>, aquí complementamos con ejercicios variados y cardio
+  </div>
+</div>
+
+<div class="profile-card" style="margin-bottom:16px">
+  <div class="profile-label">Pesas disponibles (kg)</div>
+  <div class="equipment-list">
+    <span class="equip-tag">2 kg</span><span class="equip-tag">4 kg</span>
+    <span class="equip-tag">6 kg</span><span class="equip-tag">8 kg</span>
+    <span class="equip-tag">10 kg</span><span class="equip-tag">12 kg</span>
+    <span class="equip-tag">14 kg</span><span class="equip-tag">16 kg ×1</span>
+    <span class="equip-tag">20 kg</span>
+  </div>
+</div>
+
+<div class="profile-card">
+  <div class="profile-label">Máquinas y cardio</div>
+  <div class="equipment-list">
+    <span class="equip-tag">Máquina tríceps</span>
+    <span class="equip-tag">Barra dominadas</span>
+    <span class="equip-tag">Bicicleta estática</span>
+    <span class="equip-tag">Elíptica</span>
+  </div>
+</div>
+```
+
+  </div>
+
+</main>
+
+<!-- MODAL -->
+
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle"></div>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-meta" id="modalMeta"></div>
+      <div class="modal-img-wrap" id="modalImg" style="display:none"></div>
+      <div class="modal-video" id="modalVideo" style="display:none"></div>
+      <div class="modal-desc" id="modalDesc"></div>
+      <div class="modal-steps" id="modalSteps"></div>
+      <div class="modal-tip" id="modalTip" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TIMER -->
+
+<div class="timer-widget">
+  <div class="timer-label">Descanso</div>
+  <div class="timer-display" id="timerDisplay">01:30</div>
+  <div class="timer-btns">
+    <button class="timer-btn" onclick="startTimer()">▶ START</button>
+    <button class="timer-btn" onclick="resetTimer()">↺ RST</button>
+  </div>
+</div>
+
+<button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Subir">↑</button>
+
+<script>
+// ===================== DATA =====================
+
+const exercises = {
+  A: {
+    title: "DÍA A",
+    subtitle: "Tren superior + Core + Cardio",
+    sections: [
+      {
+        label: "Cardio de arranque",
+        items: [
+          {
+            id: "A0",
+            name: "Bicicleta / Elíptica – Calentamiento",
+            meta: "10 min — intensidad moderada",
+            tags: [{ t: "Cardio", cls: "tag-cardio" }, { t: "Bici / Elíptica", cls: "tag-equipment" }],
+            cardio: true,
+            img: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTQwIiBzdHlsZT0iYmFja2dyb3VuZDojMWExYTFhIj4KICA8IS0tIEJpa2UgZnJhbWUgLS0+CiAgPGNpcmNsZSBjeD0iNjAiIGN5PSIxMDAiIHI9IjI4IiBmaWxsPSJub25lIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iNCIvPgogIDxjaXJjbGUgY3g9IjE0MCIgY3k9IjEwMCIgcj0iMjgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzg4OCIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgPGxpbmUgeDE9IjYwIiB5MT0iMTAwIiB4Mj0iMTAwIiB5Mj0iNjUiIHN0cm9rZT0iIzg4OCIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgPGxpbmUgeDE9IjEwMCIgeTE9IjY1IiB4Mj0iMTQwIiB5Mj0iMTAwIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iNCIvPgogIDxsaW5lIHgxPSIxMDAiIHkxPSI2NSIgeDI9Ijk1IiB5Mj0iNDUiIHN0cm9rZT0iIzg4OCIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgPGxpbmUgeDE9Ijg4IiB5MT0iNDUiIHgyPSIxMDIiIHkyPSI0NSIgc3Ryb2tlPSIjODg4IiBzdHJva2Utd2lkdGg9IjQiLz4KICA8IS0tIGhhbmRsZWJhcnMgLS0+CiAgPGxpbmUgeDE9IjEyMCIgeTE9IjYwIiB4Mj0iMTM1IiB5Mj0iNTUiIHN0cm9rZT0iIzg4OCIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgPGxpbmUgeDE9IjEzNSIgeTE9IjQ4IiB4Mj0iMTM1IiB5Mj0iNjIiIHN0cm9rZT0iIzg4OCIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgPCEtLSBSaWRlciBzdGljayBmaWd1cmUgLS0+CiAgPGNpcmNsZSBjeD0iMTE1IiBjeT0iMzUiIHI9IjEwIiBmaWxsPSJub25lIiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSIxMTUiIHkxPSI0NSIgeDI9IjExMiIgeTI9IjY1IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSIxMTIiIHkxPSI2NSIgeDI9IjEwMCIgeTI9IjcyIiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSIxMTIiIHkxPSI1NSIgeDI9IjEzMCIgeTI9IjU4IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSIxMzAiIHkxPSI1OCIgeDI9IjEzMyIgeTI9IjU1IiBzdHJva2U9IiNmZjZiMzUiIHN0cm9rZS13aWR0aD0iMyIvPgo8L3N2Zz4=",
+            desc: "Calentamiento aeróbico para elevar la frecuencia cardíaca y preparar articulaciones. Puedes usar la bici o la elíptica según te apetezca.",
+            steps: [
+              "Empieza los primeros 3 min a ritmo suave (zona 1).",
+              "Del min 3 al 7: aumenta el ritmo hasta notar que te cuesta hablar (zona 2-3).",
+              "Min 7-10: vuelve a bajar el ritmo suavemente para no llegar con las pulsaciones muy altas a las pesas."
+            ],
+            tip: "Si usas la bici, ajusta la resistencia. En elíptica, aprovecha los brazos para calentar hombros.",
+            video: null
+          }
+        ]
+      },
+      {
+        label: "Pecho",
+        items: [
+          {
+            id: "A1",
+            name: "Press de banca con mancuernas",
+            meta: "4 series × 10–12 reps — Mancuernas 14–20 kg",
+            tags: [{ t: "Pecho", cls: "tag-muscle" }, { t: "Tríceps", cls: "tag-muscle" }, { t: "14–20 kg", cls: "tag-equipment" }],
+            img: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTQwIiBzdHlsZT0iYmFja2dyb3VuZDojMWExYTFhIj4KICA8IS0tIEJlbmNoIC0tPgogIDxyZWN0IHg9IjMwIiB5PSI5MCIgd2lkdGg9IjE0MCIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiM4ODgiLz4KICA8bGluZSB4MT0iNTAiIHkxPSIxMDIiIHgyPSI1MCIgeTI9IjExOCIgc3Ryb2tlPSIjODg4IiBzdHJva2Utd2lkdGg9IjQiLz4KICA8bGluZSB4MT0iMTUwIiB5MT0iMTAyIiB4Mj0iMTUwIiB5Mj0iMTE4IiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iNCIvPgogIDwhLS0gQm9keSBseWluZyBvbiBiZW5jaCAtLT4KICA8bGluZSB4MT0iNDUiIHkxPSI4OCIgeDI9IjE0NSIgeTI9Ijg4IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPCEtLSBIZWFkIC0tPgogIDxjaXJjbGUgY3g9IjE1NSIgY3k9Ijg1IiByPSIxMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8IS0tIEFybXMgcHJlc3NpbmcgdXAgLS0+CiAgPGxpbmUgeDE9IjgwIiB5MT0iODgiIHgyPSI2NSIgeTI9IjYwIiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSI2NSIgeTE9IjYwIiB4Mj0iNTUiIHkyPSI2MCIgc3Ryb2tlPSIjZmY2YjM1IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxsaW5lIHgxPSI2NSIgeTE9IjYwIiB4Mj0iNzUiIHkyPSI2MCIgc3Ryb2tlPSIjZmY2YjM1IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxsaW5lIHgxPSIxMTAiIHkxPSI4OCIgeDI9IjEyNSIgeTI9IjYwIiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSIxMjUiIHkxPSI2MCIgeDI9IjExNSIgeTI9IjYwIiBzdHJva2U9IiNmZjZiMzUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPGxpbmUgeDE9IjEyNSIgeTE9IjYwIiB4Mj0iMTM1IiB5Mj0iNjAiIHN0cm9rZT0iI2ZmNmIzNSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8IS0tIExlZ3MgLS0+CiAgPGxpbmUgeDE9IjQ1IiB5MT0iODgiIHgyPSIzNSIgeTI9IjExMCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMzUiIHkxPSIxMTAiIHgyPSIyNSIgeTI9IjExMCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KPC9zdmc+",
+            desc: "Ejercicio rey para pectoral. Con mancuernas activas mejor el rango de movimiento que la barra.",
+            steps: [
+              "Túmbate en el banco, pies apoyados en el suelo.",
+              "Sostén las mancuernas a la altura del pecho, codos a ~45° del torso.",
+              "Empuja hacia arriba hasta extender los brazos sin bloquear el codo.",
+              "Baja despacio (2-3 seg), sintiendo el estiramiento en el pecho.",
+              "Haz 10–12 reps. Descansa 90 seg entre series."
+            ],
+            tip: "Empieza con 14 kg si no los has hecho antes. Súbelos a 16 o 20 si las últimas reps no cuestan nada.",
+            video: null
+          },
+          {
+            id: "A2",
+            name: "Aperturas con mancuernas",
+            meta: "3 series × 12 reps — Mancuernas 8–10 kg",
+            tags: [{ t: "Pecho", cls: "tag-muscle" }, { t: "8–10 kg", cls: "tag-equipment" }],
+            img: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTQwIiBzdHlsZT0iYmFja2dyb3VuZDojMWExYTFhIj4KICA8IS0tIEJlbmNoIC0tPgogIDxyZWN0IHg9IjMwIiB5PSI5MCIgd2lkdGg9IjE0MCIgaGVpZ2h0PSIxMiIgcng9IjQiIGZpbGw9IiM4ODgiLz4KICA8bGluZSB4MT0iNTAiIHkxPSIxMDIiIHgyPSI1MCIgeTI9IjExOCIgc3Ryb2tlPSIjODg4IiBzdHJva2Utd2lkdGg9IjQiLz4KICA8bGluZSB4MT0iMTUwIiB5MT0iMTAyIiB4Mj0iMTUwIiB5Mj0iMTE4IiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iNCIvPgogIDwhLS0gQm9keSAtLT4KICA8bGluZSB4MT0iNDUiIHkxPSI4OCIgeDI9IjE0NSIgeTI9Ijg4IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPGNpcmNsZSBjeD0iMTU1IiBjeT0iODUiIHI9IjEwIiBmaWxsPSJub25lIiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDwhLS0gQXJtcyB3aWRlIG9wZW4gKGZseSBwb3NpdGlvbikgLS0+CiAgPGxpbmUgeDE9IjkwIiB5MT0iODgiIHgyPSI0MCIgeTI9Ijc1IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxjaXJjbGUgY3g9IjM1IiBjeT0iNzIiIHI9IjUiIGZpbGw9IiNmZjZiMzUiLz4KICA8bGluZSB4MT0iMTAwIiB5MT0iODgiIHgyPSIxNjAiIHkyPSI3NSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8Y2lyY2xlIGN4PSIxNjUiIGN5PSI3MiIgcj0iNSIgZmlsbD0iI2ZmNmIzNSIvPgogIDx0ZXh0IHg9IjEwMCIgeT0iMTMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjODg4IiBmb250LXNpemU9IjExIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIj5BUEVSVFVSQTwvdGV4dD4KPC9zdmc+",
+            desc: "Ejercicio de aislamiento para el pectoral. Busca el estiramiento, no la carga.",
+            steps: [
+              "Túmbate en el banco, mancuernas sobre el pecho, palmas enfrentadas.",
+              "Abre los brazos en arco amplio bajando hasta sentir el pecho estirado.",
+              "Vuelve a la posición inicial controlando el movimiento.",
+              "No bloquees los codos — mantén una ligera flexión."
+            ],
+            tip: "8 kg suele ser suficiente. Si no sientes el pecho, baja más las mancuernas.",
+            video: null
+          }
+        ]
+      },
+      {
+        label: "Espalda + Bíceps",
+        items: [
+          {
+            id: "A3",
+            name: "Dominadas (asistidas o completas)",
+            meta: "4 series × máx reps (objetivo 6–10)",
+            tags: [{ t: "Dorsal", cls: "tag-muscle" }, { t: "Bíceps", cls: "tag-muscle" }, { t: "Barra dominadas", cls: "tag-equipment" }],
+            img: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTQwIiBzdHlsZT0iYmFja2dyb3VuZDojMWExYTFhIj4KICA8IS0tIEJhciAtLT4KICA8cmVjdCB4PSIyMCIgeT0iMjAiIHdpZHRoPSIxNjAiIGhlaWdodD0iOCIgcng9IjQiIGZpbGw9IiM4ODgiLz4KICA8bGluZSB4MT0iMzAiIHkxPSIyMCIgeDI9IjMwIiB5Mj0iMTAiIHN0cm9rZT0iIzg4OCIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgPGxpbmUgeDE9IjE3MCIgeTE9IjIwIiB4Mj0iMTcwIiB5Mj0iMTAiIHN0cm9rZT0iIzg4OCIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgPCEtLSBBcm1zIGdyaXBwaW5nIC0tPgogIDxsaW5lIHgxPSI4MCIgeTE9IjI4IiB4Mj0iODAiIHkyPSI1MCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjQiLz4KICA8bGluZSB4MT0iMTIwIiB5MT0iMjgiIHgyPSIxMjAiIHkyPSI1MCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjQiLz4KICA8IS0tIEJvZHkgLS0+CiAgPGNpcmNsZSBjeD0iMTAwIiBjeT0iNTIiIHI9IjEyIiBmaWxsPSJub25lIiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSIxMDAiIHkxPSI2NCIgeDI9IjEwMCIgeTI9IjEwMCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjQiLz4KICA8bGluZSB4MT0iMTAwIiB5MT0iODAiIHgyPSI4NSIgeTI9Ijk1IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSIxMDAiIHkxPSI4MCIgeDI9IjExNSIgeTI9Ijk1IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSIxMDAiIHkxPSIxMDAiIHgyPSI5MCIgeTI9IjEyNSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMTAwIiB5MT0iMTAwIiB4Mj0iMTEwIiB5Mj0iMTI1IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDwhLS0gQXJyb3cgdXAgLS0+CiAgPHBhdGggZD0iTTEzMCA4MCBMMTMwIDUwIEwxMzggNTggTTEzMCA1MCBMMTIyIDU4IiBzdHJva2U9IiNmZjZiMzUiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgo8L3N2Zz4=",
+            desc: "Uno de los mejores ejercicios de espalda. Si no llegas a 6 reps, usa una banda elástica de asistencia o salta al punto más alto y baja despacio.",
+            steps: [
+              "Agarra la barra un poco más ancha que los hombros, palmas hacia fuera (pronadas).",
+              "Cuelga con los brazos extendidos, activa el core.",
+              "Tira de los codos hacia abajo y hacia atrás — como si quisieras meter los omoplatos en el bolsillo.",
+              "Sube hasta que la barbilla supere la barra.",
+              "Baja despacio, sin soltarte de golpe."
+            ],
+            tip: "Si haces más de 10 reps con facilidad, cuelga peso extra con un cinturón.",
+            video: null
+          },
+          {
+            id: "A4",
+            name: "Remo con mancuerna (1 brazo)",
+            meta: "3 series × 12 reps cada lado — Mancuerna 16–20 kg",
+            tags: [{ t: "Dorsal", cls: "tag-muscle" }, { t: "Bíceps", cls: "tag-muscle" }, { t: "16–20 kg", cls: "tag-equipment" }],
+            img: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTQwIiBzdHlsZT0iYmFja2dyb3VuZDojMWExYTFhIj4KICA8IS0tIEJlbmNoIHN1cHBvcnQgLS0+CiAgPHJlY3QgeD0iMzAiIHk9IjcwIiB3aWR0aD0iNzAiIGhlaWdodD0iMTAiIHJ4PSIzIiBmaWxsPSIjODg4Ii8+CiAgPGxpbmUgeDE9IjQwIiB5MT0iODAiIHgyPSI0MCIgeTI9IjEwNSIgc3Ryb2tlPSIjODg4IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iOTAiIHkxPSI4MCIgeDI9IjkwIiB5Mj0iMTA1IiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iMyIvPgogIDwhLS0gVG9yc28gaG9yaXpvbnRhbCAtLT4KICA8bGluZSB4MT0iNTAiIHkxPSI2OCIgeDI9IjE1MCIgeTI9IjY1IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPCEtLSBIZWFkIC0tPgogIDxjaXJjbGUgY3g9IjUwIiBjeT0iNjAiIHI9IjEwIiBmaWxsPSJub25lIiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDwhLS0gU3VwcG9ydCBhcm0gLS0+CiAgPGxpbmUgeDE9IjcwIiB5MT0iNjgiIHgyPSI1NSIgeTI9IjgwIiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDwhLS0gUHVsbGluZyBhcm0gKGhpZ2ggPSBjb250cmFjdGVkKSAtLT4KICA8bGluZSB4MT0iMTMwIiB5MT0iNjUiIHgyPSIxNDUiIHkyPSI1MCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMTQ1IiB5MT0iNDIiIHgyPSIxNDUiIHkyPSI1OCIgc3Ryb2tlPSIjZmY2YjM1IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDwhLS0gTGVnIC0tPgogIDxsaW5lIHgxPSIxMjAiIHkxPSI2OCIgeDI9IjExMCIgeTI9IjEwMCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMTUwIiB5MT0iNjUiIHgyPSIxNTUiIHkyPSIxMDUiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPGxpbmUgeDE9IjE1NSIgeTE9IjEwNSIgeDI9IjE3MCIgeTI9IjEwOCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KPC9zdmc+",
+            desc: "Remo unilateral para trabajar el dorsal con rango completo de movimiento.",
+            steps: [
+              "Apoya una rodilla y una mano en el banco.",
+              "Con la otra mano sostén la mancuerna, brazo extendido.",
+              "Tira del codo hacia arriba y atrás, llevando la mancuerna a la cadera.",
+              "Baja controlado. Mantén la espalda paralela al suelo."
+            ],
+            tip: "No gires el torso para subir más. El movimiento viene del codo.",
+            video: null
+          },
+          {
+            id: "A5",
+            name: "Curl de bíceps alterno",
+            meta: "3 series × 12 reps cada brazo — Mancuernas 10–12 kg",
+            tags: [{ t: "Bíceps", cls: "tag-muscle" }, { t: "10–12 kg", cls: "tag-equipment" }],
+            img: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTQwIiBzdHlsZT0iYmFja2dyb3VuZDojMWExYTFhIj4KICA8IS0tIFN0YW5kaW5nIGZpZ3VyZSAtLT4KICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSIyNSIgcj0iMTIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPGxpbmUgeDE9IjEwMCIgeTE9IjM3IiB4Mj0iMTAwIiB5Mj0iODUiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgPCEtLSBSaWdodCBhcm0gY3VybGluZyAtLT4KICA8bGluZSB4MT0iMTAwIiB5MT0iNTAiIHgyPSIxMzAiIHkyPSI2MCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMTMwIiB5MT0iNjAiIHgyPSIxMjAiIHkyPSI0MCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMTEyIiB5MT0iMzIiIHgyPSIxMjgiIHkyPSIzOCIgc3Ryb2tlPSIjZmY2YjM1IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDwhLS0gTGVmdCBhcm0gZG93biAtLT4KICA8bGluZSB4MT0iMTAwIiB5MT0iNTAiIHgyPSI3MiIgeTI9IjYwIiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSI3MiIgeTE9IjYwIiB4Mj0iNjgiIHkyPSI4NSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iNjAiIHkxPSI4NSIgeDI9Ijc2IiB5Mj0iODUiIHN0cm9rZT0iI2ZmNmIzNSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8IS0tIExlZ3MgLS0+CiAgPGxpbmUgeDE9IjEwMCIgeTE9Ijg1IiB4Mj0iODgiIHkyPSIxMjAiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPGxpbmUgeDE9IjEwMCIgeTE9Ijg1IiB4Mj0iMTEyIiB5Mj0iMTIwIiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDwhLS0gQXJyb3cgLS0+CiAgPHBhdGggZD0iTTE0OCA3MCBMMTQ4IDQyIEwxNTQgNTAgTTE0OCA0MiBMMTQyIDUwIiBzdHJva2U9IiNmZjZiMzUiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgo8L3N2Zz4=",
+            desc: "Aislamiento de bíceps. Alterno para mantener el tiempo bajo tensión.",
+            steps: [
+              "De pie o sentado, mancuernas a los lados.",
+              "Sube una mancuerna rotando la muñeca (supinación al subir).",
+              "Baja controlado. Sube la otra.",
+              "No balancees el torso para subir."
+            ],
+            tip: "12 kg es un buen punto de partida. Si te resulta muy fácil, sube a 14 kg.",
+            video: null
+          }
+        ]
+      },
+      {
+        label: "Tríceps + Hombros",
+        items: [
+          {
+            id: "A6",
+            name: "Extensiones de tríceps en máquina",
+            meta: "4 series × 12–15 reps",
+            tags: [{ t: "Tríceps", cls: "tag-muscle" }, { t: "Máquina tríceps", cls: "tag-equipment" }],
+            img: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTQwIiBzdHlsZT0iYmFja2dyb3VuZDojMWExYTFhIj4KICA8IS0tIE1hY2hpbmUgZnJhbWUgLS0+CiAgPHJlY3QgeD0iMjAiIHk9IjIwIiB3aWR0aD0iOCIgaGVpZ2h0PSIxMTAiIGZpbGw9IiM4ODgiIHJ4PSIyIi8+CiAgPHJlY3QgeD0iMjAiIHk9IjIwIiB3aWR0aD0iODAiIGhlaWdodD0iOCIgZmlsbD0iIzg4OCIgcng9IjIiLz4KICA8cmVjdCB4PSIyMCIgeT0iNjAiIHdpZHRoPSI1NSIgaGVpZ2h0PSI4IiBmaWxsPSIjODg4IiByeD0iMiIvPgogIDwhLS0gU2VhdCAtLT4KICA8cmVjdCB4PSI3NSIgeT0iODUiIHdpZHRoPSI1MCIgaGVpZ2h0PSIxMCIgcng9IjMiIGZpbGw9IiM4ODgiLz4KICA8cmVjdCB4PSI5MCIgeT0iOTUiIHdpZHRoPSIyMCIgaGVpZ2h0PSIzMCIgcng9IjIiIGZpbGw9IiM4ODgiLz4KICA8IS0tIEZpZ3VyZSBzZWF0ZWQgLS0+CiAgPGNpcmNsZSBjeD0iMTAwIiBjeT0iNjgiIHI9IjEwIiBmaWxsPSJub25lIiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSIxMDAiIHkxPSI3OCIgeDI9IjEwMCIgeTI9Ijg4IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDwhLS0gQXJtcyBwcmVzc2luZyBkb3duIC0tPgogIDxsaW5lIHgxPSIxMDAiIHkxPSI4MiIgeDI9Ijc1IiB5Mj0iNzIiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPGxpbmUgeDE9Ijc1IiB5MT0iNzIiIHgyPSI2NSIgeTI9Ijk1IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSIxMDAiIHkxPSI4MiIgeDI9IjEyNSIgeTI9IjcyIiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSIxMjUiIHkxPSI3MiIgeDI9IjEzNSIgeTI9Ijk1IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDwhLS0gSGFuZGxlIGJhciAtLT4KICA8bGluZSB4MT0iNjAiIHkxPSI5NSIgeDI9IjE0MCIgeTI9Ijk1IiBzdHJva2U9IiNmZjZiMzUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPg==",
+            desc: "Usa la máquina específica de tu gym. Aislamiento perfecto para tríceps sin involucrar el hombro.",
+            steps: [
+              "Ajusta el asiento para que los codos queden a la altura de la almohadilla.",
+              "Agarra las asas y empuja hacia abajo extendiendo los codos completamente.",
+              "Sube despacio (2–3 seg) sin dejar caer el peso.",
+              "Los codos no deben moverse — solo el antebrazo."
+            ],
+            tip: "Sube el peso poco a poco. El tríceps ya viene trabajado de los ejercicios de pecho.",
+            video: null
+          },
+          {
+            id: "A7",
+            name: "Press de hombro con mancuernas",
+            meta: "3 series × 12 reps — Mancuernas 10–12 kg",
+            tags: [{ t: "Hombros", cls: "tag-muscle" }, { t: "10–12 kg", cls: "tag-equipment" }],
+            img: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTQwIiBzdHlsZT0iYmFja2dyb3VuZDojMWExYTFhIj4KICA8IS0tIEJlbmNoIGJhY2sgc3VwcG9ydCAtLT4KICA8cmVjdCB4PSI3MCIgeT0iNjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSI2NSIgcng9IjMiIGZpbGw9IiM4ODgiLz4KICA8cmVjdCB4PSI1NSIgeT0iMTIwIiB3aWR0aD0iODAiIGhlaWdodD0iMTAiIHJ4PSIzIiBmaWxsPSIjODg4Ii8+CiAgPCEtLSBGaWd1cmUgc2VhdGVkIC0tPgogIDxjaXJjbGUgY3g9IjEwMCIgY3k9IjUwIiByPSIxMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMTAwIiB5MT0iNjIiIHgyPSIxMDAiIHkyPSIxMDAiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgPCEtLSBBcm1zIHByZXNzaW5nIG92ZXJoZWFkIC0tPgogIDxsaW5lIHgxPSIxMDAiIHkxPSI3MCIgeDI9IjY1IiB5Mj0iNjIiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPGxpbmUgeDE9IjY1IiB5MT0iNjIiIHgyPSI1OCIgeTI9IjM1IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSI1MCIgeTE9IjI3IiB4Mj0iNjYiIHkyPSIzMSIgc3Ryb2tlPSIjZmY2YjM1IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxsaW5lIHgxPSIxMDAiIHkxPSI3MCIgeDI9IjEzNSIgeTI9IjYyIiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSIxMzUiIHkxPSI2MiIgeDI9IjE0MiIgeTI9IjM1IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSIxMzQiIHkxPSIyNyIgeDI9IjE1MCIgeTI9IjMxIiBzdHJva2U9IiNmZjZiMzUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPCEtLSBMZWdzIC0tPgogIDxsaW5lIHgxPSIxMDAiIHkxPSIxMDAiIHgyPSI4NSIgeTI9IjEyMCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMTAwIiB5MT0iMTAwIiB4Mj0iMTE1IiB5Mj0iMTIwIiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgo8L3N2Zz4=",
+            desc: "Press sentado para el deltoides anterior y medial.",
+            steps: [
+              "Siéntate en el banco con respaldo, espalda recta.",
+              "Mancuernas a la altura de las orejas, codos a 90°.",
+              "Empuja hacia arriba hasta casi extender los brazos.",
+              "Baja controlado hasta volver a 90°."
+            ],
+            tip: "No arquees la espalda para subir más peso. Usa 10 kg si los hombros están cargados.",
+            video: null
+          }
+        ]
+      },
+      {
+        label: "Core",
+        items: [
+          {
+            id: "A8",
+            name: "Plancha frontal",
+            meta: "3 series × 45–60 seg",
+            tags: [{ t: "Core", cls: "tag-muscle" }],
+            img: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTQwIiBzdHlsZT0iYmFja2dyb3VuZDojMWExYTFhIj4KICA8IS0tIEZsb29yIC0tPgogIDxsaW5lIHgxPSIxMCIgeTE9IjExNSIgeDI9IjE5MCIgeTI9IjExNSIgc3Ryb2tlPSIjODg4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1kYXNoYXJyYXk9IjUsNSIvPgogIDwhLS0gQm9keSBwbGFuayBwb3NpdGlvbiAtLT4KICA8bGluZSB4MT0iNDAiIHkxPSI5NSIgeDI9IjE2NSIgeTI9Ijg4IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iOCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPCEtLSBIZWFkIC0tPgogIDxjaXJjbGUgY3g9IjE3MiIgY3k9IjgzIiByPSIxMSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8IS0tIEZvcmVhcm1zIG9uIGdyb3VuZCAtLT4KICA8bGluZSB4MT0iNzUiIHkxPSI5NSIgeDI9IjY1IiB5Mj0iMTE1IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iNCIvPgogIDxsaW5lIHgxPSI1OCIgeTE9IjExNSIgeDI9IjcyIiB5Mj0iMTE1IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPGxpbmUgeDE9IjExMCIgeTE9IjkzIiB4Mj0iMTAwIiB5Mj0iMTE1IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iNCIvPgogIDxsaW5lIHgxPSI5MyIgeTE9IjExNSIgeDI9IjEwNyIgeTI9IjExNSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDwhLS0gRmVldCBvbiBncm91bmQgLS0+CiAgPGxpbmUgeDE9IjQwIiB5MT0iOTUiIHgyPSIzNSIgeTI9IjExNSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMzAiIHkxPSIxMTUiIHgyPSI0MiIgeTI9IjExNSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8IS0tIFN0cmFpZ2h0IGJvZHkgbGluZSBpbmRpY2F0b3IgLS0+CiAgPGxpbmUgeDE9IjQwIiB5MT0iOTUiIHgyPSIxNzIiIHkyPSI4MyIgc3Ryb2tlPSIjZmY2YjM1IiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1kYXNoYXJyYXk9IjQsNCIgb3BhY2l0eT0iMC42Ii8+Cjwvc3ZnPg==",
+            desc: "Estabilización del core. Simple pero muy efectivo si se hace bien.",
+            steps: [
+              "Apóyate en antebrazos y puntas de los pies.",
+              "El cuerpo forma una línea recta de cabeza a talones.",
+              "Activa glúteos y abdominales. No dejes caer las caderas.",
+              "Mantén la respiración constante."
+            ],
+            tip: "Si 60 seg es fácil, levanta un pie o pon un peso en la espalda.",
+            video: null
+          },
+          {
+            id: "A9",
+            name: "Crunch abdominal (peso)",
+            meta: "3 series × 15–20 reps — Disco 4–6 kg",
+            tags: [{ t: "Abdomen", cls: "tag-muscle" }, { t: "4–6 kg", cls: "tag-equipment" }],
+            img: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTQwIiBzdHlsZT0iYmFja2dyb3VuZDojMWExYTFhIj4KICA8IS0tIEZsb29yIC0tPgogIDxsaW5lIHgxPSIxMCIgeTE9IjExNSIgeDI9IjE5MCIgeTI9IjExNSIgc3Ryb2tlPSIjODg4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1kYXNoYXJyYXk9IjUsNSIvPgogIDwhLS0gVG9yc28gcmFpc2VkIChjcnVuY2ggcG9zaXRpb24pIC0tPgogIDxsaW5lIHgxPSI2MCIgeTE9IjEwNSIgeDI9IjEyMCIgeTI9Ijc1IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPCEtLSBIZWFkIC0tPgogIDxjaXJjbGUgY3g9IjEyOCIgY3k9IjY4IiByPSIxMSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8IS0tIFdlaWdodCBvbiBjaGVzdCAtLT4KICA8cmVjdCB4PSI5MCIgeT0iODIiIHdpZHRoPSIyMCIgaGVpZ2h0PSI4IiByeD0iMiIgZmlsbD0iI2ZmNmIzNSIvPgogIDwhLS0gQXJtcyBiZWhpbmQgaGVhZCAtLT4KICA8bGluZSB4MT0iMTI4IiB5MT0iNjgiIHgyPSIxNDAiIHkyPSI2MCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8bGluZSB4MT0iMTI4IiB5MT0iNjgiIHgyPSIxMTYiIHkyPSI2MCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8IS0tIEtuZWVzIGJlbnQsIGZlZXQgb24gZmxvb3IgLS0+CiAgPGxpbmUgeDE9IjYwIiB5MT0iMTA1IiB4Mj0iNTAiIHkyPSIxMTUiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPGxpbmUgeDE9IjYwIiB5MT0iMTA1IiB4Mj0iOTAiIHkyPSIxMTUiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPGxpbmUgeDE9IjkwIiB5MT0iMTE1IiB4Mj0iMTEwIiB5Mj0iMTA1IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSIxMTAiIHkxPSIxMDUiIHgyPSIxMTgiIHkyPSIxMTUiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPCEtLSBBcnJvdyB1cCAtLT4KICA8cGF0aCBkPSJNMTYwIDEwMCBMMTYwIDcwIEwxNjYgNzggTTE2MCA3MCBMMTU0IDc4IiBzdHJva2U9IiNmZjZiMzUiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgo8L3N2Zz4=",
+            desc: "Crunch clásico añadiendo resistencia con una pesa.",
+            steps: [
+              "Túmbate con rodillas flexionadas, sostén el disco en el pecho.",
+              "Eleva el torso contrayendo el abdomen (no tires del cuello).",
+              "Baja despacio sin llegar al suelo completamente.",
+              "Exhala al subir, inhala al bajar."
+            ],
+            tip: "Empieza sin peso y añade solo cuando las 20 reps sean muy fáciles.",
+            video: null
+          }
+        ]
+      },
+      {
+        label: "Cardio final",
+        items: [
+          {
+            id: "A10",
+            name: "Cardio HIIT — Bicicleta / Elíptica",
+            meta: "15 min — intervalos",
+            tags: [{ t: "Cardio", cls: "tag-cardio" }, { t: "Bici / Elíptica", cls: "tag-equipment" }],
+            cardio: true,
+            img: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTQwIiBzdHlsZT0iYmFja2dyb3VuZDojMWExYTFhIj4KICA8IS0tIE1hY2hpbmUgYmFzZSAtLT4KICA8cmVjdCB4PSI0MCIgeT0iMTE1IiB3aWR0aD0iMTIwIiBoZWlnaHQ9IjgiIHJ4PSIyIiBmaWxsPSIjODg4Ii8+CiAgPCEtLSBQb2xlcyAtLT4KICA8bGluZSB4MT0iODAiIHkxPSIxMTUiIHgyPSI3NSIgeTI9IjMwIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iNCIvPgogIDxsaW5lIHgxPSIxMjAiIHkxPSIxMTUiIHgyPSIxMjUiIHkyPSIzMCIgc3Ryb2tlPSIjODg4IiBzdHJva2Utd2lkdGg9IjQiLz4KICA8bGluZSB4MT0iNzUiIHkxPSIzMCIgeDI9IjEyNSIgeTI9IjMwIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iNCIvPgogIDwhLS0gUGVkYWxzIChlbGxpcHNlIHBhdGgpIC0tPgogIDxlbGxpcHNlIGN4PSI3NSIgY3k9IjEwNSIgcng9IjE1IiByeT0iOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjODg4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1kYXNoYXJyYXk9IjQsNCIvPgogIDwhLS0gRmlndXJlIHVzaW5nIGl0IC0tPgogIDxjaXJjbGUgY3g9IjEwMCIgY3k9IjUyIiByPSIxMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMTAwIiB5MT0iNjQiIHgyPSIxMDAiIHkyPSI5MCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjQiLz4KICA8IS0tIEFybXMgb24gcG9sZXMgLS0+CiAgPGxpbmUgeDE9IjEwMCIgeTE9IjcwIiB4Mj0iODIiIHkyPSI1NSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMTAwIiB5MT0iNzAiIHgyPSIxMTgiIHkyPSI1NSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8IS0tIExlZ3Mgb24gcGVkYWxzIC0tPgogIDxsaW5lIHgxPSIxMDAiIHkxPSI5MCIgeDI9IjgwIiB5Mj0iMTA4IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSIxMDAiIHkxPSI5MCIgeDI9IjExOCIgeTI9IjEwMCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8IS0tIE1vdGlvbiBsaW5lcyAtLT4KICA8bGluZSB4MT0iMTU1IiB5MT0iNjUiIHgyPSIxNzAiIHkyPSI2MCIgc3Ryb2tlPSIjZmY2YjM1IiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuNyIvPgogIDxsaW5lIHgxPSIxNTUiIHkxPSI3MiIgeDI9IjE3MiIgeTI9IjcyIiBzdHJva2U9IiNmZjZiMzUiIHN0cm9rZS13aWR0aD0iMiIgb3BhY2l0eT0iMC41Ii8+CiAgPGxpbmUgeDE9IjE1NSIgeTE9Ijc5IiB4Mj0iMTcwIiB5Mj0iODQiIHN0cm9rZT0iI2ZmNmIzNSIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjMiLz4KPC9zdmc+",
+            desc: "Termina quemando grasa con intervalos. Es más efectivo que cardio suave constante.",
+            steps: [
+              "2 min calentando suave.",
+              "30 seg al máximo esfuerzo (9/10 de intensidad).",
+              "1 min recuperando suave.",
+              "Repite el bloque 30seg/1min durante 10 minutos.",
+              "Últimos 3 min enfriando suave."
+            ],
+            tip: "En la bici sube la resistencia al máximo para los intervalos. En elíptica aumenta el ritmo de zancada.",
+            video: null
+          }
+        ]
+      }
+    ]
+  },
+
+  B: {
+    title: "DÍA B",
+    subtitle: "Tren inferior + Funcional + Cardio",
+    sections: [
+      {
+        label: "Cardio de arranque",
+        items: [
+          {
+            id: "B0",
+            name: "Elíptica – Calentamiento",
+            meta: "10 min — ritmo progresivo",
+            tags: [{ t: "Cardio", cls: "tag-cardio" }, { t: "Elíptica", cls: "tag-equipment" }],
+            cardio: true,
+            img: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTQwIiBzdHlsZT0iYmFja2dyb3VuZDojMWExYTFhIj4KICA8IS0tIE1hY2hpbmUgYmFzZSAtLT4KICA8cmVjdCB4PSI0MCIgeT0iMTE1IiB3aWR0aD0iMTIwIiBoZWlnaHQ9IjgiIHJ4PSIyIiBmaWxsPSIjODg4Ii8+CiAgPCEtLSBQb2xlcyAtLT4KICA8bGluZSB4MT0iODAiIHkxPSIxMTUiIHgyPSI3NSIgeTI9IjMwIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iNCIvPgogIDxsaW5lIHgxPSIxMjAiIHkxPSIxMTUiIHgyPSIxMjUiIHkyPSIzMCIgc3Ryb2tlPSIjODg4IiBzdHJva2Utd2lkdGg9IjQiLz4KICA8bGluZSB4MT0iNzUiIHkxPSIzMCIgeDI9IjEyNSIgeTI9IjMwIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iNCIvPgogIDwhLS0gUGVkYWxzIChlbGxpcHNlIHBhdGgpIC0tPgogIDxlbGxpcHNlIGN4PSI3NSIgY3k9IjEwNSIgcng9IjE1IiByeT0iOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjODg4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1kYXNoYXJyYXk9IjQsNCIvPgogIDwhLS0gRmlndXJlIHVzaW5nIGl0IC0tPgogIDxjaXJjbGUgY3g9IjEwMCIgY3k9IjUyIiByPSIxMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMTAwIiB5MT0iNjQiIHgyPSIxMDAiIHkyPSI5MCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjQiLz4KICA8IS0tIEFybXMgb24gcG9sZXMgLS0+CiAgPGxpbmUgeDE9IjEwMCIgeTE9IjcwIiB4Mj0iODIiIHkyPSI1NSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMTAwIiB5MT0iNzAiIHgyPSIxMTgiIHkyPSI1NSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8IS0tIExlZ3Mgb24gcGVkYWxzIC0tPgogIDxsaW5lIHgxPSIxMDAiIHkxPSI5MCIgeDI9IjgwIiB5Mj0iMTA4IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSIxMDAiIHkxPSI5MCIgeDI9IjExOCIgeTI9IjEwMCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8IS0tIE1vdGlvbiBsaW5lcyAtLT4KICA8bGluZSB4MT0iMTU1IiB5MT0iNjUiIHgyPSIxNzAiIHkyPSI2MCIgc3Ryb2tlPSIjZmY2YjM1IiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuNyIvPgogIDxsaW5lIHgxPSIxNTUiIHkxPSI3MiIgeDI9IjE3MiIgeTI9IjcyIiBzdHJva2U9IiNmZjZiMzUiIHN0cm9rZS13aWR0aD0iMiIgb3BhY2l0eT0iMC41Ii8+CiAgPGxpbmUgeDE9IjE1NSIgeTE9Ijc5IiB4Mj0iMTcwIiB5Mj0iODQiIHN0cm9rZT0iI2ZmNmIzNSIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjMiLz4KPC9zdmc+",
+            desc: "Calentamiento con la elíptica. A diferencia del Día A, aquí empezamos con la elíptica para activar piernas y glúteos.",
+            steps: [
+              "5 min a ritmo cómodo, pendiente media.",
+              "5 min con más resistencia, sin dejar de mover también los brazos.",
+              "Intenta mantener el talón en contacto con el pedal para activar glúteos."
+            ],
+            tip: "Si prefieres variar, puedes hacer 5 min de bici y 5 de elíptica.",
+            video: null
+          }
+        ]
+      },
+      {
+        label: "Piernas + Glúteos",
+        items: [
+          {
+            id: "B1",
+            name: "Sentadilla goblet con mancuerna",
+            meta: "4 series × 12–15 reps — Mancuerna 16–20 kg",
+            tags: [{ t: "Cuádriceps", cls: "tag-muscle" }, { t: "Glúteos", cls: "tag-muscle" }, { t: "16–20 kg", cls: "tag-equipment" }],
+            img: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTQwIiBzdHlsZT0iYmFja2dyb3VuZDojMWExYTFhIj4KICA8IS0tIEZsb29yIC0tPgogIDxsaW5lIHgxPSIxMCIgeTE9IjEzMCIgeDI9IjE5MCIgeTI9IjEzMCIgc3Ryb2tlPSIjODg4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1kYXNoYXJyYXk9IjUsNSIvPgogIDwhLS0gRmlndXJlIGluIHNxdWF0IHBvc2l0aW9uIC0tPgogIDxjaXJjbGUgY3g9IjEwMCIgY3k9IjMwIiByPSIxMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8IS0tIFRvcnNvIGxlYW5pbmcgc2xpZ2h0bHkgLS0+CiAgPGxpbmUgeDE9IjEwMCIgeTE9IjQyIiB4Mj0iOTUiIHkyPSI3NSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjQiLz4KICA8IS0tIER1bWJiZWxsIGF0IGNoZXN0IC0tPgogIDxyZWN0IHg9IjgyIiB5PSI0OCIgd2lkdGg9IjI2IiBoZWlnaHQ9IjEwIiByeD0iMyIgZmlsbD0iI2ZmNmIzNSIvPgogIDwhLS0gQXJtcyBob2xkaW5nIHdlaWdodCAtLT4KICA8bGluZSB4MT0iOTUiIHkxPSI1NSIgeDI9IjgyIiB5Mj0iNTMiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPGxpbmUgeDE9Ijk1IiB5MT0iNTUiIHgyPSIxMDgiIHkyPSI1MyIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8IS0tIFRoaWdocyBwYXJhbGxlbCAtLT4KICA8bGluZSB4MT0iOTUiIHkxPSI3NSIgeDI9IjY1IiB5Mj0iODgiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgPGxpbmUgeDE9Ijk1IiB5MT0iNzUiIHgyPSIxMjUiIHkyPSI4OCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjQiLz4KICA8IS0tIExvd2VyIGxlZ3MgLS0+CiAgPGxpbmUgeDE9IjY1IiB5MT0iODgiIHgyPSI2MCIgeTI9IjEzMCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMTI1IiB5MT0iODgiIHgyPSIxMzAiIHkyPSIxMzAiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPCEtLSBEZXB0aCBsaW5lIC0tPgogIDxsaW5lIHgxPSI2MCIgeTE9Ijg4IiB4Mj0iMTQwIiB5Mj0iODgiIHN0cm9rZT0iI2ZmNmIzNSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtZGFzaGFycmF5PSIzLDMiIG9wYWNpdHk9IjAuNSIvPgogIDx0ZXh0IHg9IjEwMCIgeT0iMTI1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjZmY2YjM1IiBmb250LXNpemU9IjkiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiPm11c2xvcyBwYXJhbGVsb3M8L3RleHQ+Cjwvc3ZnPg==",
+            desc: "Sentadilla con mancuerna sostenida en el pecho. Técnica más fácil de aprender que la sentadilla con barra.",
+            steps: [
+              "Sostén la mancuerna verticalmente en el pecho con ambas manos (tipo goblet).",
+              "Pies separados al ancho de hombros, punteras ligeramente abiertas.",
+              "Baja doblando rodillas y caderas hasta que los muslos estén paralelos al suelo.",
+              "Empuja hacia arriba con los talones. El pecho arriba siempre.",
+              "Busca la profundidad: cuanto más bajas, más glúteo activas."
+            ],
+            tip: "Con 20 kg estás en un buen rango. Si las últimas 3 reps no cuestan, súbelo.",
+            video: null
+          },
+          {
+            id: "B2",
+            name: "Zancadas con mancuernas",
+            meta: "3 series × 10 reps cada pierna — Mancuernas 10–14 kg",
+            tags: [{ t: "Cuádriceps", cls: "tag-muscle" }, { t: "Glúteos", cls: "tag-muscle" }, { t: "10–14 kg", cls: "tag-equipment" }],
+            img: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTQwIiBzdHlsZT0iYmFja2dyb3VuZDojMWExYTFhIj4KICA8IS0tIEZsb29yIC0tPgogIDxsaW5lIHgxPSIxMCIgeTE9IjEzMCIgeDI9IjE5MCIgeTI9IjEzMCIgc3Ryb2tlPSIjODg4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1kYXNoYXJyYXk9IjUsNSIvPgogIDwhLS0gRmlndXJlIGluIGx1bmdlIC0tPgogIDxjaXJjbGUgY3g9IjEwNSIgY3k9IjI4IiByPSIxMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMTA1IiB5MT0iNDAiIHgyPSIxMDUiIHkyPSI3OCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjQiLz4KICA8IS0tIEZyb250IGxlZyAtLT4KICA8bGluZSB4MT0iMTA1IiB5MT0iNzgiIHgyPSIxMzAiIHkyPSI5MCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjQiLz4KICA8bGluZSB4MT0iMTMwIiB5MT0iOTAiIHgyPSIxNDAiIHkyPSIxMzAiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPCEtLSBCYWNrIGxlZyBkb3duIC0tPgogIDxsaW5lIHgxPSIxMDUiIHkxPSI3OCIgeDI9Ijg1IiB5Mj0iOTAiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgPGxpbmUgeDE9Ijg1IiB5MT0iOTAiIHgyPSI3NSIgeTI9IjEyNSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8IS0tIER1bWJiZWxscyAtLT4KICA8bGluZSB4MT0iNzgiIHkxPSI1MiIgeDI9Ijc4IiB5Mj0iNzAiIHN0cm9rZT0iI2ZmNmIzNSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8bGluZSB4MT0iMTMwIiB5MT0iNTIiIHgyPSIxMzAiIHkyPSI3MCIgc3Ryb2tlPSIjZmY2YjM1IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDwhLS0gQXJtcyAtLT4KICA8bGluZSB4MT0iMTA1IiB5MT0iNTAiIHgyPSI3OCIgeTI9IjYwIiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMiIvPgogIDxsaW5lIHgxPSIxMDUiIHkxPSI1MCIgeDI9IjEzMCIgeTI9IjYwIiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMiIvPgo8L3N2Zz4=",
+            desc: "Zancada alternada caminando. Trabaja unilateralmente para corregir desequilibrios.",
+            steps: [
+              "De pie, mancuernas a los lados.",
+              "Da un paso largo hacia adelante, baja la rodilla trasera casi al suelo.",
+              "Empuja con el pie delantero y lleva el pie trasero hacia adelante.",
+              "Alterna piernas durante los 10 pasos de cada pierna."
+            ],
+            tip: "Mantén el torso recto. Si el equilibrio falla, reduce el peso y céntrate en la técnica.",
+            video: null
+          },
+          {
+            id: "B3",
+            name: "Peso muerto rumano con mancuernas",
+            meta: "3 series × 12 reps — Mancuernas 14–20 kg",
+            tags: [{ t: "Isquiotibiales", cls: "tag-muscle" }, { t: "Glúteos", cls: "tag-muscle" }, { t: "14–20 kg", cls: "tag-equipment" }],
+            img: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTQwIiBzdHlsZT0iYmFja2dyb3VuZDojMWExYTFhIj4KICA8IS0tIEZsb29yIC0tPgogIDxsaW5lIHgxPSIxMCIgeTE9IjEzMCIgeDI9IjE5MCIgeTI9IjEzMCIgc3Ryb2tlPSIjODg4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1kYXNoYXJyYXk9IjUsNSIvPgogIDwhLS0gRmlndXJlIGhpbmdpbmcgYXQgaGlwcywgYmFjayBmbGF0IC0tPgogIDxjaXJjbGUgY3g9IjE0NSIgY3k9IjM1IiByPSIxMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8IS0tIFRvcnNvIGhvcml6b250YWwgLS0+CiAgPGxpbmUgeDE9IjE0NSIgeTE9IjQ3IiB4Mj0iODAiIHkyPSI2MCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDwhLS0gSGlwIGhpbmdlIHBvaW50IC0tPgogIDxjaXJjbGUgY3g9Ijk1IiBjeT0iNzAiIHI9IjUiIGZpbGw9IiNmZjZiMzUiLz4KICA8IS0tIExlZ3MgdmVydGljYWwgLS0+CiAgPGxpbmUgeDE9Ijk1IiB5MT0iNzAiIHgyPSI5MCIgeTI9IjEzMCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjQiLz4KICA8bGluZSB4MT0iOTUiIHkxPSI3MCIgeDI9IjEwOCIgeTI9IjEzMCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjQiLz4KICA8IS0tIEFybXMgaGFuZ2luZyB3aXRoIGR1bWJiZWxscyAtLT4KICA8bGluZSB4MT0iMTIwIiB5MT0iNTgiIHgyPSIxMTgiIHkyPSI4NSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMTEwIiB5MT0iNzgiIHgyPSIxMjYiIHkyPSI5MiIgc3Ryb2tlPSIjZmY2YjM1IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxsaW5lIHgxPSI4MCIgeTE9IjYwIiB4Mj0iNzUiIHkyPSI4NSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iNjgiIHkxPSI3OCIgeDI9IjgyIiB5Mj0iOTIiIHN0cm9rZT0iI2ZmNmIzNSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8IS0tIFN0cmFpZ2h0IGJhY2sgYXJyb3cgLS0+CiAgPHRleHQgeD0iMTU1IiB5PSI1NSIgZmlsbD0iI2ZmNmIzNSIgZm9udC1zaXplPSI5IiBmb250LWZhbWlseT0ibW9ub3NwYWNlIj5lc3BhbGRhPC90ZXh0PgogIDx0ZXh0IHg9IjE1NSIgeT0iNjUiIGZpbGw9IiNmZjZiMzUiIGZvbnQtc2l6ZT0iOSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSI+cmVjdGE8L3RleHQ+Cjwvc3ZnPg==",
+            desc: "Ejercicio excelente para isquios y glúteos. Con mancuernas es más seguro que con barra si no tienes experiencia.",
+            steps: [
+              "De pie, mancuernas delante de los muslos, palmas hacia ti.",
+              "Con las rodillas ligeramente flexionadas, inclina el torso hacia adelante empujando las caderas atrás.",
+              "Deja bajar las mancuernas siguiendo las piernas, sintiendo el estiramiento en los isquios.",
+              "Para cuando sientas tensión (no dolor). Vuelve a la posición inicial apretando los glúteos."
+            ],
+            tip: "La espalda debe estar recta todo el tiempo. Si la redondeas, reduce el peso.",
+            video: null
+          },
+          {
+            id: "B4",
+            name: "Elevación de talones (pantorrillas)",
+            meta: "4 series × 20 reps — Con mancuerna 20 kg o sin peso",
+            tags: [{ t: "Pantorrillas", cls: "tag-muscle" }, { t: "20 kg", cls: "tag-equipment" }],
+            img: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTQwIiBzdHlsZT0iYmFja2dyb3VuZDojMWExYTFhIj4KICA8IS0tIFN0ZXAgZWRnZSAtLT4KICA8cmVjdCB4PSI2MCIgeT0iMTA1IiB3aWR0aD0iODAiIGhlaWdodD0iMTUiIHJ4PSIyIiBmaWxsPSIjODg4Ii8+CiAgPCEtLSBGaWd1cmUgb24gdGlwdG9lcyAtLT4KICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSIyMiIgcj0iMTIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPGxpbmUgeDE9IjEwMCIgeTE9IjM0IiB4Mj0iMTAwIiB5Mj0iNzUiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgPGxpbmUgeDE9IjEwMCIgeTE9IjUyIiB4Mj0iNzgiIHkyPSI2NSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iNzgiIHkxPSI2NSIgeDI9IjcwIiB5Mj0iODgiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPCEtLSBEdW1iYmVsbCBpbiBoYW5kIC0tPgogIDxsaW5lIHgxPSI2MyIgeTE9IjgzIiB4Mj0iNzciIHkyPSI5MyIgc3Ryb2tlPSIjZmY2YjM1IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxsaW5lIHgxPSIxMDAiIHkxPSI1MiIgeDI9IjEyMiIgeTI9IjY1IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSIxMjIiIHkxPSI2NSIgeDI9IjEzMCIgeTI9Ijg4IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDwhLS0gTGVncyBvbiB0aXB0b2VzIC0tPgogIDxsaW5lIHgxPSIxMDAiIHkxPSI3NSIgeDI9Ijg4IiB5Mj0iMTA1IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iNCIvPgogIDxsaW5lIHgxPSIxMDAiIHkxPSI3NSIgeDI9IjExMiIgeTI9IjEwNSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjQiLz4KICA8IS0tIEhlZWxzIHVwIGluZGljYXRvciAtLT4KICA8bGluZSB4MT0iODMiIHkxPSIxMDUiIHgyPSI4MyIgeTI9IjEyMCIgc3Ryb2tlPSIjODg4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1kYXNoYXJyYXk9IjMsMyIvPgogIDxsaW5lIHgxPSIxMTciIHkxPSIxMDUiIHgyPSIxMTciIHkyPSIxMjAiIHN0cm9rZT0iIzg4OCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtZGFzaGFycmF5PSIzLDMiLz4KICA8IS0tIEFycm93IHVwIC0tPgogIDxwYXRoIGQ9Ik0xNTUgOTAgTDE1NSA2MCBMMTYxIDY4IE0xNTUgNjAgTDE0OSA2OCIgc3Ryb2tlPSIjZmY2YjM1IiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiLz4KPC9zdmc+",
+            desc: "Gemelos y sóleo. Las pantorrillas se recuperan rápido y necesitan bastante volumen.",
+            steps: [
+              "De pie sobre el borde de un escalón o en el suelo.",
+              "Sube de puntillas lo máximo posible.",
+              "Aguanta 1 seg arriba, baja despacio.",
+              "Si tienes un escalón, baja el talón por debajo de la base para mayor rango."
+            ],
+            tip: "Haz las series lentas — 3 seg subir, 1 seg aguantar, 3 seg bajar. Las pantorrillas lo agradecen.",
+            video: null
+          }
+        ]
+      },
+      {
+        label: "Funcional + Estabilidad",
+        items: [
+          {
+            id: "B5",
+            name: "Press Arnold con mancuernas",
+            meta: "3 series × 12 reps — Mancuernas 10–12 kg",
+            tags: [{ t: "Hombros", cls: "tag-muscle" }, { t: "10–12 kg", cls: "tag-equipment" }],
+            img: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTQwIiBzdHlsZT0iYmFja2dyb3VuZDojMWExYTFhIj4KICA8IS0tIEJlbmNoIGJhY2sgLS0+CiAgPHJlY3QgeD0iNjgiIHk9IjU4IiB3aWR0aD0iMTAiIGhlaWdodD0iNjgiIHJ4PSIzIiBmaWxsPSIjODg4Ii8+CiAgPHJlY3QgeD0iNTUiIHk9IjEyMiIgd2lkdGg9IjgwIiBoZWlnaHQ9IjEwIiByeD0iMyIgZmlsbD0iIzg4OCIvPgogIDwhLS0gRmlndXJlIHNlYXRlZCAtLT4KICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSI0NiIgcj0iMTIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPGxpbmUgeDE9IjEwMCIgeTE9IjU4IiB4Mj0iMTAwIiB5Mj0iOTgiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgPCEtLSBBcm1zIG1pZC1yb3RhdGlvbiAocGFsbXMgcm90YXRpbmcgb3V0d2FyZCkgLS0+CiAgPGxpbmUgeDE9IjEwMCIgeTE9IjY1IiB4Mj0iNjIiIHkyPSI2MCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iNjIiIHkxPSI2MCIgeDI9IjUyIiB5Mj0iMzUiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPGxpbmUgeDE9IjQ0IiB5MT0iMjciIHgyPSI2MCIgeTI9IjMzIiBzdHJva2U9IiNmZjZiMzUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPGxpbmUgeDE9IjEwMCIgeTE9IjY1IiB4Mj0iMTM4IiB5Mj0iNjAiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPGxpbmUgeDE9IjEzOCIgeTE9IjYwIiB4Mj0iMTQ4IiB5Mj0iMzUiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPGxpbmUgeDE9IjE0MCIgeTE9IjI3IiB4Mj0iMTU2IiB5Mj0iMzMiIHN0cm9rZT0iI2ZmNmIzNSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8IS0tIFJvdGF0aW9uIGFycm93cyAtLT4KICA8cGF0aCBkPSJNNTIgNDggUTQ4IDQyIDU0IDM4IiBzdHJva2U9IiNmZjZiMzUiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIgbWFya2VyLWVuZD0idXJsKCNhcnIpIi8+CiAgPHBhdGggZD0iTTE0OCA0OCBRMTUyIDQyIDE0NiAzOCIgc3Ryb2tlPSIjZmY2YjM1IiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiLz4KICA8dGV4dCB4PSIxMDAiIHk9IjExOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzg4OCIgZm9udC1zaXplPSIxMCIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSI+UFJFU1MgQVJOT0xEPC90ZXh0PgogIDwhLS0gTGVncyAtLT4KICA8bGluZSB4MT0iMTAwIiB5MT0iOTgiIHgyPSI4NSIgeTI9IjEyMiIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMTAwIiB5MT0iOTgiIHgyPSIxMTUiIHkyPSIxMjIiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+Cjwvc3ZnPg==",
+            desc: "Variación del press de hombro que trabaja los tres haces del deltoides gracias a la rotación.",
+            steps: [
+              "Sentado, mancuernas a la altura del pecho, palmas hacia ti.",
+              "Al empujar hacia arriba, rota las manos (al final, palmas hacia fuera).",
+              "Al bajar, rota de vuelta (palmas hacia ti al final).",
+              "El movimiento debe ser fluido."
+            ],
+            tip: "Va algo más lento que el press normal — es la esencia del Arnold. No sacrifiques el rango por el peso.",
+            video: null
+          },
+          {
+            id: "B6",
+            name: "Elevaciones laterales",
+            meta: "3 series × 15 reps — Mancuernas 6–8 kg",
+            tags: [{ t: "Hombros", cls: "tag-muscle" }, { t: "6–8 kg", cls: "tag-equipment" }],
+            img: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTQwIiBzdHlsZT0iYmFja2dyb3VuZDojMWExYTFhIj4KICA8IS0tIFN0YW5kaW5nIGZpZ3VyZSAtLT4KICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSIyMiIgcj0iMTIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPGxpbmUgeDE9IjEwMCIgeTE9IjM0IiB4Mj0iMTAwIiB5Mj0iODUiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgPCEtLSBBcm1zIHJhaXNlZCB0byBzaWRlIChUIHBvc2l0aW9uKSAtLT4KICA8bGluZSB4MT0iMTAwIiB5MT0iNTAiIHgyPSI0MCIgeTI9IjU1IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSI0MCIgeTE9IjQ4IiB4Mj0iNDAiIHkyPSI2MiIgc3Ryb2tlPSIjZmY2YjM1IiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxsaW5lIHgxPSIxMDAiIHkxPSI1MCIgeDI9IjE2MCIgeTI9IjU1IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSIxNjAiIHkxPSI0OCIgeDI9IjE2MCIgeTI9IjYyIiBzdHJva2U9IiNmZjZiMzUiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPCEtLSBBcnJvdyB1cCBvbiBib3RoIHNpZGVzIC0tPgogIDxwYXRoIGQ9Ik0zMCA2NSBMMzAgNTAgTDI1IDU3IE0zMCA1MCBMMzUgNTciIHN0cm9rZT0iI2ZmNmIzNSIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIi8+CiAgPHBhdGggZD0iTTE3MCA2NSBMMTcwIDUwIEwxNjUgNTcgTTE3MCA1MCBMMTc1IDU3IiBzdHJva2U9IiNmZjZiMzUiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgogIDwhLS0gTGVncyAtLT4KICA8bGluZSB4MT0iMTAwIiB5MT0iODUiIHgyPSI4OCIgeTI9IjEyNSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMTAwIiB5MT0iODUiIHgyPSIxMTIiIHkyPSIxMjUiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+Cjwvc3ZnPg==",
+            desc: "Aislamiento del deltoides medial para dar amplitud de hombros.",
+            steps: [
+              "De pie, mancuernas a los lados.",
+              "Sube los brazos hacia los lados hasta la altura de los hombros.",
+              "Codos ligeramente flexionados, muñeca ligeramente rotada (como si vaciases un vaso).",
+              "Baja despacio — el excéntrico también cuenta."
+            ],
+            tip: "6 kg pueden parecer poco, pero en series de 15 reps te sorprenderá. No hagas trampa subiendo los hombros.",
+            video: null
+          },
+          {
+            id: "B7",
+            name: "Curl martillo (bíceps brachial)",
+            meta: "3 series × 12 reps — Mancuernas 12–14 kg",
+            tags: [{ t: "Bíceps", cls: "tag-muscle" }, { t: "Antebrazo", cls: "tag-muscle" }, { t: "12–14 kg", cls: "tag-equipment" }],
+            img: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTQwIiBzdHlsZT0iYmFja2dyb3VuZDojMWExYTFhIj4KICA8IS0tIFN0YW5kaW5nIGZpZ3VyZSAtLT4KICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSIyMiIgcj0iMTIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPGxpbmUgeDE9IjEwMCIgeTE9IjM0IiB4Mj0iMTAwIiB5Mj0iODgiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgPCEtLSBMZWZ0IGFybSBjdXJsaW5nIChuZXV0cmFsIGdyaXAgPSBoYW1tZXIpIC0tPgogIDxsaW5lIHgxPSIxMDAiIHkxPSI1MCIgeDI9IjY4IiB5Mj0iNjAiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPGxpbmUgeDE9IjY4IiB5MT0iNjAiIHgyPSI2MiIgeTI9IjM4IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDwhLS0gRHVtYmJlbGwgdmVydGljYWwgKG5ldXRyYWwgZ3JpcCkgLS0+CiAgPGxpbmUgeDE9IjYyIiB5MT0iMjgiIHgyPSI2MiIgeTI9IjQ4IiBzdHJva2U9IiNmZjZiMzUiIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPCEtLSBSaWdodCBhcm0gZG93biAtLT4KICA8bGluZSB4MT0iMTAwIiB5MT0iNTAiIHgyPSIxMzIiIHkyPSI2MCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMTMyIiB5MT0iNjAiIHgyPSIxMzYiIHkyPSI4OCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8IS0tIER1bWJiZWxsIHZlcnRpY2FsIC0tPgogIDxsaW5lIHgxPSIxMzYiIHkxPSI4MCIgeDI9IjEzNiIgeTI9IjEwMCIgc3Ryb2tlPSIjZmY2YjM1IiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDwhLS0gTGVncyAtLT4KICA8bGluZSB4MT0iMTAwIiB5MT0iODgiIHgyPSI4OCIgeTI9IjEyNSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMTAwIiB5MT0iODgiIHgyPSIxMTIiIHkyPSIxMjUiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPCEtLSBMYWJlbCAtLT4KICA8dGV4dCB4PSIxMDAiIHk9IjEzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzg4OCIgZm9udC1zaXplPSI5IiBmb250LWZhbWlseT0ibW9ub3NwYWNlIj5hZ2FycmUgbmV1dHJvPC90ZXh0Pgo8L3N2Zz4=",
+            desc: "Como el curl normal pero con agarre neutro (pulgar arriba). Trabaja el braquial y los antebrazos.",
+            steps: [
+              "De pie, mancuernas con agarre neutro (como si cogieras un martillo).",
+              "Sube la mancuerna sin rotar la muñeca.",
+              "Baja controlado. Alterna los brazos."
+            ],
+            tip: "Puedes hacer los dos brazos a la vez o alternar. Alternar es más difícil de hacer trampa.",
+            video: null
+          }
+        ]
+      },
+      {
+        label: "Core",
+        items: [
+          {
+            id: "B8",
+            name: "Plancha lateral",
+            meta: "3 series × 30–45 seg cada lado",
+            tags: [{ t: "Core lateral", cls: "tag-muscle" }],
+            img: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTQwIiBzdHlsZT0iYmFja2dyb3VuZDojMWExYTFhIj4KICA8IS0tIEZsb29yIC0tPgogIDxsaW5lIHgxPSIxMCIgeTE9IjExNSIgeDI9IjE5MCIgeTI9IjExNSIgc3Ryb2tlPSIjODg4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1kYXNoYXJyYXk9IjUsNSIvPgogIDwhLS0gQm9keSBzaWRld2F5cyAtLT4KICA8bGluZSB4MT0iMzAiIHkxPSI5NSIgeDI9IjE1NSIgeTI9IjgwIiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPCEtLSBIZWFkIC0tPgogIDxjaXJjbGUgY3g9IjE2MyIgY3k9Ijc0IiByPSIxMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8IS0tIEZvcmVhcm0gb24gZ3JvdW5kIC0tPgogIDxsaW5lIHgxPSI1NSIgeTE9Ijk1IiB4Mj0iNDUiIHkyPSIxMTUiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgPGxpbmUgeDE9IjM4IiB5MT0iMTE1IiB4Mj0iNTUiIHkyPSIxMTUiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8IS0tIEZlZXQgc3RhY2tlZCAtLT4KICA8bGluZSB4MT0iMzAiIHkxPSI5NSIgeDI9IjIyIiB5Mj0iMTE1IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iNCIvPgogIDwhLS0gVG9wIGFybSByYWlzZWQgLS0+CiAgPGxpbmUgeDE9IjExMCIgeTE9IjgzIiB4Mj0iMTE1IiB5Mj0iNjIiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPCEtLSBCb2R5IGxpbmUgaW5kaWNhdG9yIC0tPgogIDxsaW5lIHgxPSIzMCIgeTE9Ijk1IiB4Mj0iMTYzIiB5Mj0iNzQiIHN0cm9rZT0iI2ZmNmIzNSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtZGFzaGFycmF5PSI0LDQiIG9wYWNpdHk9IjAuNSIvPgo8L3N2Zz4=",
+            desc: "Trabaja los oblicuos y estabilizadores laterales. Complementa la plancha frontal del Día A.",
+            steps: [
+              "Apóyate en un antebrazo, cuerpo lateral recto.",
+              "Cadera elevada, el cuerpo forma una línea.",
+              "Opción avanzada: levanta la pierna superior o el brazo."
+            ],
+            tip: "Si el hombro molesta, hazlo con la rodilla apoyada en lugar del pie.",
+            video: null
+          },
+          {
+            id: "B9",
+            name: "Elevación de piernas tumbado",
+            meta: "3 series × 15–20 reps",
+            tags: [{ t: "Abdomen bajo", cls: "tag-muscle" }],
+            img: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTQwIiBzdHlsZT0iYmFja2dyb3VuZDojMWExYTFhIj4KICA8IS0tIEZsb29yIC0tPgogIDxsaW5lIHgxPSIxMCIgeTE9IjExNSIgeDI9IjE5MCIgeTI9IjExNSIgc3Ryb2tlPSIjODg4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1kYXNoYXJyYXk9IjUsNSIvPgogIDwhLS0gQm9keSBseWluZyBmbGF0IC0tPgogIDxsaW5lIHgxPSIzNSIgeTE9IjEwMCIgeDI9IjEzNSIgeTI9IjEwMCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDwhLS0gSGVhZCAtLT4KICA8Y2lyY2xlIGN4PSIxNDgiIGN5PSI5NyIgcj0iMTEiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPCEtLSBBcm1zIGZsYXQgb24gc2lkZXMgLS0+CiAgPGxpbmUgeDE9IjgwIiB5MT0iMTAwIiB4Mj0iODAiIHkyPSIxMTUiIHN0cm9rZT0iI2U4ZmY0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPGxpbmUgeDE9IjEwMCIgeTE9IjEwMCIgeDI9IjEwMCIgeTI9IjExNSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8IS0tIExlZ3MgcmFpc2VkIHRvIDkwwrAgLS0+CiAgPGxpbmUgeDE9IjM1IiB5MT0iMTAwIiB4Mj0iMzAiIHkyPSI1NSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjQiLz4KICA8bGluZSB4MT0iNTAiIHkxPSIxMDAiIHgyPSI0NSIgeTI9IjU1IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iNCIvPgogIDwhLS0gRmVldCBhdCB0b3AgLS0+CiAgPGxpbmUgeDE9IjI1IiB5MT0iNTUiIHgyPSIzNSIgeTI9IjU1IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSI0MCIgeTE9IjU1IiB4Mj0iNTAiIHkyPSI1NSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8IS0tIEFycm93IHVwIC0tPgogIDxwYXRoIGQ9Ik02NSA5MCBMNjUgNTAgTDcxIDU4IE02NSA1MCBMNTkgNTgiIHN0cm9rZT0iI2ZmNmIzNSIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIi8+CiAgPCEtLSA5MMKwIGluZGljYXRvciAtLT4KICA8cGF0aCBkPSJNMzUgMTAwIEwzNSA4MCBMNTUgODAiIHN0cm9rZT0iI2ZmNmIzNSIgc3Ryb2tlLXdpZHRoPSIxLjUiIGZpbGw9Im5vbmUiIHN0cm9rZS1kYXNoYXJyYXk9IjMsMyIvPgogIDx0ZXh0IHg9IjQyIiB5PSI3OCIgZmlsbD0iI2ZmNmIzNSIgZm9udC1zaXplPSI5IiBmb250LWZhbWlseT0ibW9ub3NwYWNlIj45MMKwPC90ZXh0Pgo8L3N2Zz4=",
+            desc: "Trabaja el abdomen inferior, una zona difícil de activar con el crunch.",
+            steps: [
+              "Tumbado, manos bajo los glúteos o estiradas a los lados.",
+              "Piernas extendidas, eleva hasta los 90°.",
+              "Baja despacio sin que los talones toquen el suelo.",
+              "Si tienes molestias en la espalda, dobla un poco las rodillas."
+            ],
+            tip: "Cuanto más despacio bajas, más difícil. Prueba 4 segundos bajando.",
+            video: null
+          }
+        ]
+      },
+      {
+        label: "Cardio final",
+        items: [
+          {
+            id: "B10",
+            name: "Cardio estado estable — Elíptica",
+            meta: "15 min — zona 2 (puedes mantener una conversación)",
+            tags: [{ t: "Cardio", cls: "tag-cardio" }, { t: "Elíptica", cls: "tag-equipment" }],
+            cardio: true,
+            img: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTQwIiBzdHlsZT0iYmFja2dyb3VuZDojMWExYTFhIj4KICA8IS0tIE1hY2hpbmUgYmFzZSAtLT4KICA8cmVjdCB4PSI0MCIgeT0iMTE1IiB3aWR0aD0iMTIwIiBoZWlnaHQ9IjgiIHJ4PSIyIiBmaWxsPSIjODg4Ii8+CiAgPCEtLSBQb2xlcyAtLT4KICA8bGluZSB4MT0iODAiIHkxPSIxMTUiIHgyPSI3NSIgeTI9IjMwIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iNCIvPgogIDxsaW5lIHgxPSIxMjAiIHkxPSIxMTUiIHgyPSIxMjUiIHkyPSIzMCIgc3Ryb2tlPSIjODg4IiBzdHJva2Utd2lkdGg9IjQiLz4KICA8bGluZSB4MT0iNzUiIHkxPSIzMCIgeDI9IjEyNSIgeTI9IjMwIiBzdHJva2U9IiM4ODgiIHN0cm9rZS13aWR0aD0iNCIvPgogIDwhLS0gUGVkYWxzIChlbGxpcHNlIHBhdGgpIC0tPgogIDxlbGxpcHNlIGN4PSI3NSIgY3k9IjEwNSIgcng9IjE1IiByeT0iOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjODg4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1kYXNoYXJyYXk9IjQsNCIvPgogIDwhLS0gRmlndXJlIHVzaW5nIGl0IC0tPgogIDxjaXJjbGUgY3g9IjEwMCIgY3k9IjUyIiByPSIxMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMTAwIiB5MT0iNjQiIHgyPSIxMDAiIHkyPSI5MCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjQiLz4KICA8IS0tIEFybXMgb24gcG9sZXMgLS0+CiAgPGxpbmUgeDE9IjEwMCIgeTE9IjcwIiB4Mj0iODIiIHkyPSI1NSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMTAwIiB5MT0iNzAiIHgyPSIxMTgiIHkyPSI1NSIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8IS0tIExlZ3Mgb24gcGVkYWxzIC0tPgogIDxsaW5lIHgxPSIxMDAiIHkxPSI5MCIgeDI9IjgwIiB5Mj0iMTA4IiBzdHJva2U9IiNlOGZmNDciIHN0cm9rZS13aWR0aD0iMyIvPgogIDxsaW5lIHgxPSIxMDAiIHkxPSI5MCIgeDI9IjExOCIgeTI9IjEwMCIgc3Ryb2tlPSIjZThmZjQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8IS0tIE1vdGlvbiBsaW5lcyAtLT4KICA8bGluZSB4MT0iMTU1IiB5MT0iNjUiIHgyPSIxNzAiIHkyPSI2MCIgc3Ryb2tlPSIjZmY2YjM1IiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuNyIvPgogIDxsaW5lIHgxPSIxNTUiIHkxPSI3MiIgeDI9IjE3MiIgeTI9IjcyIiBzdHJva2U9IiNmZjZiMzUiIHN0cm9rZS13aWR0aD0iMiIgb3BhY2l0eT0iMC41Ii8+CiAgPGxpbmUgeDE9IjE1NSIgeTE9Ijc5IiB4Mj0iMTcwIiB5Mj0iODQiIHN0cm9rZT0iI2ZmNmIzNSIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjMiLz4KPC9zdmc+",
+            desc: "A diferencia del HIIT del Día A, hoy terminas con cardio suave y constante. Zona 2 quema grasa y mejora la recuperación.",
+            steps: [
+              "Mantén un ritmo cómodo durante 15 min.",
+              "La intensidad debe ser tal que puedas hablar en frases cortas.",
+              "Varía el agarre o el movimiento de brazos para no aburrirte.",
+              "Termina los últimos 2 min bajando la intensidad gradualmente."
+            ],
+            tip: "Zona 2 es muy infravalorada. Mejora la capacidad aeróbica base y es clave para la recuperación.",
+            video: null
+          }
+        ]
+      }
+    ]
+  }
+};
+
+// ===================== STATE =====================
+
+let currentDay = 'A';
+let done = {};
+let history = JSON.parse(localStorage.getItem('gymlog_history') || '[]');
+
+// Timer
+let timerInterval = null;
+let timerSeconds = 90;
+let timerRunning = false;
+
+// ===================== INIT =====================
+
+function init() {
+  // Date
+  const d = new Date();
+  document.getElementById('currentDate').textContent = d.toLocaleDateString('es-ES', { weekday:'short', day:'numeric', month:'short' }).toUpperCase();
+  
+  loadDay('A');
+  renderHistory();
+}
+
+// ===================== PAGES =====================
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  event.target.classList.add('active');
+  if (id === 'history') renderHistory();
+}
+
+// ===================== WORKOUT =====================
+
+function loadDay(day) {
+  currentDay = day;
+  done = {};
+  
+  // Active button
+  document.querySelectorAll('.day-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.includes(day));
+  });
+
+  const data = exercises[day];
+  document.getElementById('workoutTitle').textContent = data.title;
+  document.getElementById('workoutSubtitle').textContent = data.subtitle;
+
+  renderExercises();
+  updateProgress();
+}
+
+function renderExercises() {
+  const data = exercises[currentDay];
+  const list = document.getElementById('exerciseList');
+  let html = '';
+  let num = 1;
+
+  data.sections.forEach(section => {
+    html += `<div class="section-label">${section.label}</div>`;
+    section.items.forEach(ex => {
+      const isDone = done[ex.id] || false;
+      const cardioClass = ex.cardio ? 'cardio-card' : '';
+      const doneClass = isDone ? 'done' : '';
+      const tagsHtml = ex.tags.map(t => `<span class="tag ${t.cls}">${t.t}</span>`).join('');
+      const thumbHtml = ex.img
+        ? `<div class="ex-thumb" onclick="openModal('${ex.id}')"><img src="${ex.img}" alt="${ex.name}" loading="lazy" onerror="this.parentNode.innerHTML='💪'"></div>`
+        : `<div class="ex-thumb no-img" onclick="openModal('${ex.id}')">💪</div>`;
+
+      html += `
+        <div class="exercise-card ${cardioClass} ${doneClass}" id="card-${ex.id}">
+          <div class="ex-number">${String(num).padStart(2,'0')}</div>
+          ${thumbHtml}
+          <div class="ex-info">
+            <div class="ex-name">${ex.name}</div>
+            <div class="ex-meta">${ex.meta}</div>
+            <div class="ex-tags">${tagsHtml}</div>
+          </div>
+          <div class="ex-actions">
+            <button class="btn-done" onclick="toggleDone('${ex.id}')">${isDone ? '✓ HECHO' : '✓ MARCAR'}</button>
+            <button class="btn-info" onclick="openModal('${ex.id}')">VER INFO</button>
+          </div>
+        </div>
+      `;
+      num++;
+    });
+  });
+
+  list.innerHTML = html;
+}
+
+function toggleDone(id) {
+  done[id] = !done[id];
+  renderExercises();
+  updateProgress();
+
+  // Auto-start rest timer if not cardio
+  const ex = findExercise(id);
+  if (ex && !ex.cardio && done[id]) {
+    resetTimer();
+    startTimer();
+  }
+}
+
+function updateProgress() {
+  const data = exercises[currentDay];
+  let total = 0;
+  data.sections.forEach(s => total += s.items.length);
+  const doneCount = Object.values(done).filter(Boolean).length;
+  const pct = total > 0 ? Math.round((doneCount / total) * 100) : 0;
+
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('statDone').textContent = doneCount;
+  document.getElementById('statTotal').textContent = total;
+}
+
+function finishSession() {
+  const data = exercises[currentDay];
+  let total = 0;
+  data.sections.forEach(s => total += s.items.length);
+  const doneCount = Object.values(done).filter(Boolean).length;
+
+  if (doneCount === 0) {
+    alert('¡Marca al menos un ejercicio antes de guardar la sesión!');
+    return;
+  }
+
+  const entry = {
+    date: new Date().toLocaleDateString('es-ES'),
+    day: currentDay,
+    title: data.title,
+    done: doneCount,
+    total: total,
+    pct: Math.round((doneCount / total) * 100)
+  };
+
+  history.unshift(entry);
+  localStorage.setItem('gymlog_history', JSON.stringify(history));
+  
+  alert(`✅ Sesión guardada. Completaste ${doneCount}/${total} ejercicios (${entry.pct}%). ¡Buen trabajo!`);
+  done = {};
+  renderExercises();
+  updateProgress();
+}
+
+function findExercise(id) {
+  for (const day of Object.values(exercises)) {
+    for (const section of day.sections) {
+      for (const ex of section.items) {
+        if (ex.id === id) return ex;
+      }
+    }
+  }
+  return null;
+}
+
+// ===================== MODAL =====================
+
+function openModal(id) {
+  const ex = findExercise(id);
+  if (!ex) return;
+
+  document.getElementById('modalTitle').textContent = ex.name;
+  document.getElementById('modalMeta').textContent = ex.meta;
+  document.getElementById('modalDesc').textContent = ex.desc;
+
+  // Steps
+  const stepsEl = document.getElementById('modalSteps');
+  if (ex.steps && ex.steps.length) {
+    let html = '<h4>Cómo hacerlo</h4>';
+    ex.steps.forEach((s, i) => {
+      html += `<div class="step-item"><div class="step-num">${i+1}</div><div>${s}</div></div>`;
+    });
+    stepsEl.innerHTML = html;
+    stepsEl.style.display = 'block';
+  } else {
+    stepsEl.style.display = 'none';
+  }
+
+  // Tip
+  const tipEl = document.getElementById('modalTip');
+  if (ex.tip) {
+    tipEl.innerHTML = `<strong>💡 Consejo</strong>${ex.tip}`;
+    tipEl.style.display = 'block';
+  } else {
+    tipEl.style.display = 'none';
+  }
+
+  // Image
+  const imgEl = document.getElementById('modalImg');
+  if (ex.img) {
+    imgEl.innerHTML = `<img src="${ex.img}" alt="${ex.name}" onerror="this.parentNode.style.display='none'">`;
+    imgEl.style.display = 'flex';
+  } else {
+    imgEl.innerHTML = '';
+    imgEl.style.display = 'none';
+  }
+
+  // Video
+  const videoEl = document.getElementById('modalVideo');
+  if (ex.video) {
+    videoEl.innerHTML = `<iframe src="${ex.video}" frameborder="0" allowfullscreen></iframe>`;
+    videoEl.style.display = 'block';
+  } else {
+    videoEl.innerHTML = '';
+    videoEl.style.display = 'none';
+  }
+
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModalDirect();
+}
+
+function closeModalDirect() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.getElementById('modalImg').innerHTML = '';
+  document.getElementById('modalVideo').innerHTML = '';
+}
+
+// ===================== HISTORY =====================
+
+function renderHistory() {
+  const grid = document.getElementById('historyGrid');
+  if (!history.length) {
+    grid.innerHTML = `<div class="empty-history"><span class="big">0</span>Aún no has guardado ninguna sesión.<br>¡Completa tu primer entrenamiento!</div>`;
+    return;
+  }
+
+  let html = '';
+  history.forEach(entry => {
+    html += `
+      <div class="history-card">
+        <div>
+          <div class="hist-date">${entry.date}</div>
+          <div class="hist-day">${entry.title || 'Día ' + entry.day}</div>
+        </div>
+        <div class="hist-completion">
+          <div class="hist-pct">${entry.pct}%</div>
+          <div class="hist-done">${entry.done}/${entry.total} ejercicios</div>
+        </div>
+      </div>
+    `;
+  });
+  grid.innerHTML = html;
+}
+
+// ===================== TIMER =====================
+
+function formatTime(s) {
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+}
+
+function startTimer() {
+  if (timerRunning) return;
+  timerRunning = true;
+  timerInterval = setInterval(() => {
+    timerSeconds--;
+    document.getElementById('timerDisplay').textContent = formatTime(timerSeconds);
+    if (timerSeconds <= 0) {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      timerSeconds = 90;
+      document.getElementById('timerDisplay').textContent = '¡YA!';
+      setTimeout(() => {
+        document.getElementById('timerDisplay').textContent = formatTime(timerSeconds);
+      }, 2000);
+    }
+  }, 1000);
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerSeconds = 90;
+  document.getElementById('timerDisplay').textContent = formatTime(timerSeconds);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModalDirect();
+});
+
+init();
+</script>
+
+</body>
+</html>
